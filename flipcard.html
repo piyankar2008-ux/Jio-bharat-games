@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Number Match</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jio Timer Test</title>
   <style>
     * {
       box-sizing: border-box;
@@ -16,173 +16,144 @@
       background-color: #000;
       color: #fff;
       text-align: center;
-      padding: 5px;
-      width: 100vw;
-      max-width: 240px; /* Small feature phone screen size */
-      margin: 0 auto;
+      padding: 8px;
     }
 
-    h1 {
-      font-size: 16px;
-      margin-bottom: 4px;
+    h2 {
+      font-size: 15px;
       color: #ff0;
+      margin-bottom: 8px;
     }
 
-    .stats {
+    .test-box {
+      border: 2px solid #444;
+      background: #111;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .title {
       font-size: 12px;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-      width: 100%;
-    }
-
-    /* Simple static buttons - NO ANIMATIONS */
-    .card {
-      width: 100%;
-      height: 42px;
-      background-color: #222;
-      border: 2px solid #555;
-      color: #fff;
-      font-size: 18px;
+      color: #0ff;
       font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
     }
 
-    .card.flipped {
-      background-color: #008;
-      border-color: #00f;
-    }
-
-    .card.matched {
-      background-color: #060;
-      border-color: #0f0;
+    .number {
+      font-size: 32px;
+      font-weight: bold;
       color: #fff;
+      margin: 4px 0;
     }
 
     .btn {
-      margin-top: 8px;
+      display: block;
       width: 100%;
-      padding: 6px;
-      background-color: #d00;
+      background: #222;
       color: #fff;
-      border: none;
+      border: 2px solid #fff;
+      padding: 6px;
       font-size: 13px;
       font-weight: bold;
-      cursor: pointer;
+      margin-top: 4px;
     }
 
-    .msg {
-      margin-top: 4px;
-      font-size: 12px;
-      color: #0f0;
-      font-weight: bold;
-      height: 16px;
+    .btn:active, .btn:focus {
+      background: #008;
+      border-color: #0f0;
+      color: #ff0;
+    }
+
+    .btn-red {
+      background: #800;
+      border-color: #f00;
+    }
+
+    #reloadIframe {
+      display: none; /* Keeps reload active in background without flashing the screen */
     }
   </style>
 </head>
 <body>
 
-  <h1>NUM MATCH</h1>
-  <div class="stats">Moves: <span id="moves">0</span></div>
+  <h2>JIOBHARAT TIMER TEST</h2>
 
-  <div class="grid" id="grid"></div>
+  <!-- TEST 1: Standard JS setInterval -->
+  <div class="test-box">
+    <div class="title">1. NORMAL JS TIMER (setInterval)</div>
+    <div class="number" id="jsNum">0</div>
+    <button class="btn" id="jsStartBtn" onclick="startJsTimer()">START NORMAL TIMER</button>
+    <button class="btn btn-red" id="jsStopBtn" onclick="stopJsTimer()" style="display:none;">STOP NORMAL TIMER</button>
+  </div>
 
-  <div class="msg" id="msg"></div>
-  <button class="btn" id="reset">RESET</button>
+  <!-- TEST 2: Background Reload Timer (No white flash) -->
+  <div class="test-box">
+    <div class="title">2. BACKGROUND RELOAD TIMER</div>
+    <div class="number" id="reloadNum">0</div>
+    <button class="btn" id="reloadStartBtn" onclick="startReloadTimer()">START RELOAD TIMER</button>
+    <button class="btn btn-red" id="reloadStopBtn" onclick="stopReloadTimer()" style="display:none;">STOP RELOAD TIMER</button>
+  </div>
+
+  <!-- Hidden iframe handles background reloads -->
+  <iframe id="reloadIframe"></iframe>
 
   <script>
-    // Pure numbers instead of emojis
-    const NUMBERS = ['1', '2', '3', '4', '5', '6'];
-    const grid = document.getElementById('grid');
-    const movesDisplay = document.getElementById('moves');
-    const msgDisplay = document.getElementById('msg');
-    const resetBtn = document.getElementById('reset');
+    // --- 1. NORMAL JS TIMER LOGIC ---
+    var jsCount = 0;
+    var jsTimer = null;
 
-    let flippedCards = [];
-    let matchedCount = 0;
-    let moves = 0;
-    let isLocked = false;
+    function startJsTimer() {
+      if (jsTimer) return;
+      document.getElementById("jsStartBtn").style.display = "none";
+      document.getElementById("jsStopBtn").style.display = "block";
 
-    function initGame() {
-      grid.innerHTML = '';
-      msgDisplay.textContent = '';
-      moves = 0;
-      matchedCount = 0;
-      flippedCards = [];
-      isLocked = false;
-      movesDisplay.textContent = moves;
-
-      // Duplicate and shuffle numbers array
-      const deck = [...NUMBERS, ...NUMBERS].sort(() => Math.random() - 0.5);
-
-      deck.forEach((num) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.num = num;
-        card.textContent = '?';
-
-        card.addEventListener('click', () => handleCardClick(card));
-        grid.appendChild(card);
-      });
+      jsTimer = setInterval(function() {
+        jsCount++;
+        document.getElementById("jsNum").innerHTML = jsCount;
+      }, 1000);
     }
 
-    function handleCardClick(card) {
-      if (isLocked || card.classList.contains('flipped') || card.classList.contains('matched')) {
-        return;
-      }
-
-      // Static visual swap instantly without smooth transitions/animations
-      card.classList.add('flipped');
-      card.textContent = card.dataset.num;
-      flippedCards.push(card);
-
-      if (flippedCards.length === 2) {
-        moves++;
-        movesDisplay.textContent = moves;
-        checkMatch();
-      }
+    function stopJsTimer() {
+      clearInterval(jsTimer);
+      jsTimer = null;
+      document.getElementById("jsStartBtn").style.display = "block";
+      document.getElementById("jsStopBtn").style.display = "none";
     }
 
-    function checkMatch() {
-      const [c1, c2] = flippedCards;
+    // --- 2. RELOAD TIMER LOGIC ---
+    var reloadCount = 0;
+    var reloadActive = false;
 
-      if (c1.dataset.num === c2.dataset.num) {
-        c1.classList.remove('flipped');
-        c2.classList.remove('flipped');
-        c1.classList.add('matched');
-        c2.classList.add('matched');
-        flippedCards = [];
-        matchedCount++;
+    function startReloadTimer() {
+      reloadActive = true;
+      document.getElementById("reloadStartBtn").style.display = "none";
+      document.getElementById("reloadStopBtn").style.display = "block";
+      triggerBackgroundReload();
+    }
 
-        if (matchedCount === NUMBERS.length) {
-          msgDisplay.textContent = "YOU WIN!";
+    function stopReloadTimer() {
+      reloadActive = false;
+      document.getElementById("reloadStartBtn").style.display = "block";
+      document.getElementById("reloadStopBtn").style.display = "none";
+    }
+
+    function triggerBackgroundReload() {
+      if (!reloadActive) return;
+
+      reloadCount++;
+      document.getElementById("reloadNum").innerHTML = reloadCount;
+
+      // Force background frame reload without refreshing main page
+      var iframe = document.getElementById("reloadIframe");
+      iframe.src = "about:blank"; // Clears cache memory
+
+      setTimeout(function() {
+        if (reloadActive) {
+          triggerBackgroundReload();
         }
-      } else {
-        isLocked = true;
-        // Brief pause so the player can memorize the number, then hide immediately
-        setTimeout(() => {
-          c1.classList.remove('flipped');
-          c2.classList.remove('flipped');
-          c1.textContent = '?';
-          c2.textContent = '?';
-          flippedCards = [];
-          isLocked = false;
-        }, 600);
-      }
+      }, 1000);
     }
-
-    resetBtn.addEventListener('click', initGame);
-
-    initGame();
   </script>
+
 </body>
 </html>
+
