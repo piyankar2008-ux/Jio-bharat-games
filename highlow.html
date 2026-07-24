@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>High Low</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: monospace; }
+    body { background: #000; color: #fff; text-align: center; width: 100vw; max-width: 240px; margin: 0 auto; padding: 6px; }
+    h3 { margin: 3px 0; color: #fff; }
+    .score-box { font-size: 13px; margin: 4px; color: #ff0; }
+    #num-display { font-size: 42px; font-weight: bold; border: 3px solid #fff; width: 85px; margin: 8px auto; padding: 8px 0; background: #111; }
+    .controls button { background: #222; color: #fff; border: 2px solid #fff; font-size: 14px; padding: 6px 14px; margin: 3px; font-weight: bold; cursor: pointer; }
+    #msg { font-size: 12px; margin: 5px; color: #0ff; min-height: 16px; }
+    .btn-reset { background: #f00; color: #fff; font-size: 13px; padding: 5px 14px; border: 1px solid #fff; font-weight: bold; margin-top: 6px; cursor: pointer; }
+    
+    /* Global Menu Bar */
+    .menu-bar { margin-top: 10px; padding-top: 6px; border-top: 1px dashed #555; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; }
+    .menu-bar a { font-size: 10px; color: #ff0; text-decoration: none; border: 1px solid #444; padding: 2px 4px; background: #111; }
+  </style>
+</head>
+<body>
+
+  <h3>HIGH OR LOW</h3>
+  <div class="score-box">STREAK: <span id="streak">0</span> | BEST: <span id="best">0</span></div>
+  <div id="num-display">?</div>
+  <div id="msg">IS NEXT HIGHER OR LOWER?</div>
+
+  <div class="controls">
+    <button onclick="guess('HIGH')">2 (HIGH)</button><br>
+    <button onclick="guess('LOW')">8 (LOW)</button>
+  </div>
+  
+  <div>
+    <button onclick="initGame()" id="restartBtn" class="btn-reset" style="display:none;">RESTART</button>
+  </div>
+
+  
+  <script>
+    var currentNum = 0, streak = 0, bestStreak = 0, gameOver = false;
+
+    function initGame() {
+      currentNum = Math.floor(Math.random() * 8) + 2; 
+      streak = 0; gameOver = false;
+      document.getElementById("num-display").innerHTML = currentNum;
+      document.getElementById("streak").innerHTML = streak;
+      document.getElementById("msg").innerHTML = "IS NEXT HIGHER OR LOWER?";
+      document.getElementById("restartBtn").style.display = "none";
+    }
+
+    function guess(choice) {
+      if (gameOver) return;
+      var nextNum = Math.floor(Math.random() * 10) + 1;
+      while (nextNum === currentNum) { nextNum = Math.floor(Math.random() * 10) + 1; }
+
+      var correct = (choice === "HIGH" && nextNum > currentNum) || (choice === "LOW" && nextNum < currentNum);
+      document.getElementById("num-display").innerHTML = nextNum;
+
+      if (correct) {
+        streak++;
+        document.getElementById("streak").innerHTML = streak;
+        document.getElementById("msg").innerHTML = "CORRECT! Next one?";
+        if (streak > bestStreak) { bestStreak = streak; document.getElementById("best").innerHTML = bestStreak; }
+        currentNum = nextNum;
+      } else {
+        document.getElementById("msg").innerHTML = "WRONG! It was " + nextNum;
+        gameOver = true;
+        document.getElementById("restartBtn").style.display = "inline";
+      }
+    }
+
+    document.onkeydown = function(e) {
+      if (e.key === "2") guess('HIGH');
+      if (e.key === "8") guess('LOW');
+    };
+
+    initGame();
+  </script>
+</body>
+</html>

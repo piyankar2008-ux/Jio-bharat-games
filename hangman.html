@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hangman 100</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: monospace;
+      text-align: center;
+      margin: 0;
+      padding: 5px;
+    }
+    
+    .status-box {
+      font-size: 15px;
+      margin: 5px;
+      color: #ff0;
+    }
+    
+    #word-display {
+      font-size: 26px;
+      letter-spacing: 4px;
+      margin: 15px auto;
+      font-weight: bold;
+      color: #0ff;
+    }
+
+    #letter-picker {
+      font-size: 42px;
+      font-weight: bold;
+      border: 3px solid #fff;
+      width: 80px;
+      margin: 10px auto;
+      padding: 8px 0;
+      background: #111;
+    }
+    
+    .controls button {
+      background: #222;
+      color: #fff;
+      border: 2px solid #fff;
+      font-size: 16px;
+      padding: 8px 15px;
+      margin: 3px;
+      font-weight: bold;
+    }
+    
+    #msg {
+      font-size: 15px;
+      margin: 8px;
+      min-height: 20px;
+    }
+    
+    #restartBtn {
+      background: #f00;
+      color: #fff;
+      font-size: 16px;
+      padding: 8px 20px;
+      border: 1px solid #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <h3 style="margin:5px 0;">HINT HANGMAN</h3>
+  
+  <div class="status-box">LIVES LEFT: <span id="lives">6</span></div>
+  
+  <!-- Word layout container -->
+  <div id="word-display">_ _ _ _</div>
+  
+  <div id="msg">SELECT A LETTER:</div>
+  
+  <div id="letter-picker">A</div>
+
+  <div class="controls">
+    <button onclick="changeLetter(-1)">4 (PREV)</button>
+    <button onclick="changeLetter(1)">6 (NEXT)</button>
+    <br><br>
+    <button onclick="guessLetter()" style="background:#0f0; color:#000; width:150px; font-size:18px;">5 (CHOOSE)</button>
+  </div>
+  
+  <div style="margin-top: 15px;">
+    <button onclick="resetGame()" id="restartBtn" style="display:none;">PLAY AGAIN</button>
+  </div>
+
+  <script>
+    // 100 Short, screen-safe words (No long words to cause line wrapping)
+    var words = [
+      "JIO", "GAME", "CODE", "STAR", "COIN", "PLAY", "KING", "WIND", "FIRE", "BIRD",
+      "FISH", "TREE", "MOON", "SUN", "ROCK", "SAND", "SHIP", "BOAT", "CARS", "BIKE",
+      "LAMP", "BOOK", "PEN", "DESK", "DOOR", "RING", "GOLD", "IRON", "ZEAL", "ZERO",
+      "HERO", "DARK", "LIGHT", "BLUE", "RED", "PINK", "ACID", "BASE", "ATOM", "CELL",
+      "BONE", "HAIR", "FACE", "HAND", "FOOT", "ZONE", "TIME", "DATE", "YEAR", "HOME",
+      "WORK", "TEAM", "MINT", "PLAN", "NOTE", "CHAT", "LINK", "FILE", "DATA", "HOST",
+      "TEXT", "FONT", "ICON", "PAGE", "WEB", "BYTE", "BIT", "CHIP", "RAM", "DISK",
+      "WAVE", "RAIN", "SNOW", "COLD", "HEAT", "WARM", "COOL", "HOT", "LION", "BEAR",
+      "WOLF", "DEER", "FROG", "DUCK", "CROW", "HAWK", "ROSE", "LEAF", "SEED", "ROOT",
+      "MILK", "RICE", "CAKE", "SOUP", "SALT", "CORN", "BEEF", "PORK", "MEAT", "EGG"
+    ];
+    
+    var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var letterIndex = 0;
+    
+    var secretWord = "";
+    var guessedLetters = [];
+    var lives = 6;
+    var gameOver = false;
+
+    function resetGame() {
+      // 1. Pick a random word from the pool of 100
+      secretWord = words[Math.floor(Math.random() * words.length)];
+      guessedLetters = [];
+      lives = 6;
+      letterIndex = 0;
+      gameOver = false;
+      
+      // 2. Automatically grant structural letter hints
+      giveStartingHints();
+      
+      document.getElementById("letter-picker").innerHTML = alphabet[letterIndex];
+      document.getElementById("lives").innerHTML = lives;
+      document.getElementById("msg").innerHTML = "SELECT A LETTER:";
+      document.getElementById("restartBtn").style.display = "none";
+      
+      updateDisplay();
+    }
+
+    // Auto-reveals a couple of letters to start the player off
+    function giveStartingHints() {
+      var uniqueChars = [];
+      for(var i = 0; i < secretWord.length; i++) {
+        if(uniqueChars.indexOf(secretWord[i]) === -1) {
+          uniqueChars.push(secretWord[i]);
+        }
+      }
+      
+      // Calculate how many baseline letter types to give away (roughly 1 letter for short words, 2 for longer ones)
+      var hintsToGive = Math.max(1, Math.floor(uniqueChars.length * 0.4));
+      
+      // Shuffle unique characters to pick randomly
+      for (var i = uniqueChars.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = uniqueChars[i];
+        uniqueChars[i] = uniqueChars[j];
+        uniqueChars[j] = temp;
+      }
+      
+      // Put the selected hint letters straight into the guessed group
+      for(var k = 0; k < hintsToGive; k++) {
+        if(uniqueChars[k]) {
+          guessedLetters.push(uniqueChars[k]);
+        }
+      }
+    }
+
+    function changeLetter(dir) {
+      if (gameOver) return;
+      letterIndex += dir;
+      if (letterIndex < 0) letterIndex = alphabet.length - 1;
+      if (letterIndex >= alphabet.length) letterIndex = 0;
+      document.getElementById("letter-picker").innerHTML = alphabet[letterIndex];
+    }
+
+    function guessLetter() {
+      if (gameOver) return;
+      var currentLetter = alphabet[letterIndex];
+      
+      if (guessedLetters.indexOf(currentLetter) !== -1) {
+        document.getElementById("msg").innerHTML = "ALREADY VISIBLE: " + currentLetter;
+        return;
+      }
+      
+      guessedLetters.push(currentLetter);
+      
+      if (secretWord.indexOf(currentLetter) !== -1) {
+        document.getElementById("msg").innerHTML = "CORRECT: " + currentLetter;
+      } else {
+        lives--;
+        document.getElementById("lives").innerHTML = lives;
+        document.getElementById("msg").innerHTML = "WRONG: " + currentLetter;
+      }
+      
+      updateDisplay();
+      checkGameStatus();
+    }
+
+    function updateDisplay() {
+      var displayStr = "";
+      for (var i = 0; i < secretWord.length; i++) {
+        var char = secretWord[i];
+        if (guessedLetters.indexOf(char) !== -1) {
+          displayStr += char + " ";
+        } else {
+          displayStr += "_ ";
+        }
+      }
+      document.getElementById("word-display").innerHTML = displayStr;
+    }
+
+    function checkGameStatus() {
+      if (lives <= 0) {
+        document.getElementById("msg").innerHTML = "LOST! IT WAS: " + secretWord;
+        gameOver = true;
+        document.getElementById("restartBtn").style.display = "inline";
+        return;
+      }
+      
+      var won = true;
+      for (var i = 0; i < secretWord.length; i++) {
+        if (guessedLetters.indexOf(secretWord[i]) === -1) {
+          won = false;
+          break;
+        }
+      }
+      
+      if (won) {
+        document.getElementById("msg").innerHTML = "YOU WIN!";
+        gameOver = true;
+        document.getElementById("restartBtn").style.display = "inline";
+      }
+    }
+
+    // Physical keypad bindings
+    document.onkeydown = function(e) {
+      var key = e.key;
+      if (key === "4") changeLetter(-1);
+      if (key === "6") changeLetter(1);
+      if (key === "5") guessLetter();
+    };
+
+    resetGame();
+  </script>
+
+</body>
+</html>

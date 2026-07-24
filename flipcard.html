@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Number Match</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding: 5px;
+      width: 100vw;
+      max-width: 240px; /* Small feature phone screen size */
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin-bottom: 4px;
+      color: #ff0;
+    }
+
+    .stats {
+      font-size: 12px;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      width: 100%;
+    }
+
+    /* Simple static buttons - NO ANIMATIONS */
+    .card {
+      width: 100%;
+      height: 42px;
+      background-color: #222;
+      border: 2px solid #555;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .card.flipped {
+      background-color: #008;
+      border-color: #00f;
+    }
+
+    .card.matched {
+      background-color: #060;
+      border-color: #0f0;
+      color: #fff;
+    }
+
+    .btn {
+      margin-top: 8px;
+      width: 100%;
+      padding: 6px;
+      background-color: #d00;
+      color: #fff;
+      border: none;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .msg {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #0f0;
+      font-weight: bold;
+      height: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>NUM MATCH</h1>
+  <div class="stats">Moves: <span id="moves">0</span></div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="msg" id="msg"></div>
+  <button class="btn" id="reset">RESET</button>
+
+  <script>
+    // Pure numbers instead of emojis
+    const NUMBERS = ['1', '2', '3', '4', '5', '6'];
+    const grid = document.getElementById('grid');
+    const movesDisplay = document.getElementById('moves');
+    const msgDisplay = document.getElementById('msg');
+    const resetBtn = document.getElementById('reset');
+
+    let flippedCards = [];
+    let matchedCount = 0;
+    let moves = 0;
+    let isLocked = false;
+
+    function initGame() {
+      grid.innerHTML = '';
+      msgDisplay.textContent = '';
+      moves = 0;
+      matchedCount = 0;
+      flippedCards = [];
+      isLocked = false;
+      movesDisplay.textContent = moves;
+
+      // Duplicate and shuffle numbers array
+      const deck = [...NUMBERS, ...NUMBERS].sort(() => Math.random() - 0.5);
+
+      deck.forEach((num) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.num = num;
+        card.textContent = '?';
+
+        card.addEventListener('click', () => handleCardClick(card));
+        grid.appendChild(card);
+      });
+    }
+
+    function handleCardClick(card) {
+      if (isLocked || card.classList.contains('flipped') || card.classList.contains('matched')) {
+        return;
+      }
+
+      // Static visual swap instantly without smooth transitions/animations
+      card.classList.add('flipped');
+      card.textContent = card.dataset.num;
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        moves++;
+        movesDisplay.textContent = moves;
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const [c1, c2] = flippedCards;
+
+      if (c1.dataset.num === c2.dataset.num) {
+        c1.classList.remove('flipped');
+        c2.classList.remove('flipped');
+        c1.classList.add('matched');
+        c2.classList.add('matched');
+        flippedCards = [];
+        matchedCount++;
+
+        if (matchedCount === NUMBERS.length) {
+          msgDisplay.textContent = "YOU WIN!";
+        }
+      } else {
+        isLocked = true;
+        // Brief pause so the player can memorize the number, then hide immediately
+        setTimeout(() => {
+          c1.classList.remove('flipped');
+          c2.classList.remove('flipped');
+          c1.textContent = '?';
+          c2.textContent = '?';
+          flippedCards = [];
+          isLocked = false;
+        }, 600);
+      }
+    }
+
+    resetBtn.addEventListener('click', initGame);
+
+    initGame();
+  </script>
+</body>
+</html>

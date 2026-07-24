@@ -1,0 +1,219 @@
+<html>
+
+<head>
+  <title>Mini Slot Machine</title>
+  
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: monospace;
+      text-align: center;
+    }
+    
+    #coins,
+    #high {
+      font-size: 20px;
+      margin: 8px;
+    }
+    
+    #slot {
+      font-size: 38px;
+      border: 2px solid white;
+      width: 190px;
+      margin: 15px auto;
+      padding: 12px;
+    }
+    
+    button {
+      font-size: 22px;
+      padding: 8px 25px;
+      margin: 5px;
+    }
+    
+    #msg {
+      font-size: 20px;
+      margin: 15px;
+    }
+    
+    #help {
+      font-size: 14px;
+      margin-top: 20px;
+    }
+  </style>
+  
+</head>
+
+<body>
+  
+  <h2>SLOT MACHINE</h2>
+  
+  <div id="coins">COINS : 100</div>
+  <div id="high">HIGH : 100</div>
+  
+  <div id="slot">
+    ? ? ?
+  </div>
+  
+  <button onclick="spin()" id="spinBtn">SPIN</button>
+  <button onclick="restart()" id="restartBtn" style="display:none;">RESTART</button>
+  
+  <div id="msg">
+    GOOD LUCK
+  </div>
+  
+  <div id="help">
+    O = CHERRY<br>
+    Q = LEMON<br>
+    * = STAR<br>
+    7 = SEVEN<br>
+    ? = BELL<br>
+    | = BAR
+  </div>
+  
+  
+  <script>
+    var symbols = ["O", "Q", "*", "7", "?", "|"];
+    
+    var coins = 100;
+    var high = 100;
+    
+    
+    function getReward(x, three) {
+      
+      if (three) {
+        
+        if (x == "7") return 100;
+        if (x == "|") return 60;
+        if (x == "?") return 50;
+        if (x == "*") return 40;
+        if (x == "O") return 30;
+        if (x == "Q") return 20;
+        
+      }
+      else {
+        
+        if (x == "7") return 25;
+        if (x == "|") return 15;
+        if (x == "?") return 12;
+        if (x == "*") return 10;
+        if (x == "O") return 8;
+        if (x == "Q") return 5;
+        
+      }
+      
+      return 0;
+      
+    }
+    
+    
+    function spin() {
+      
+      if (coins < 10) {
+        
+        document.getElementById("msg").innerHTML = "GAME OVER";
+        
+        document.getElementById("spinBtn").style.display = "none";
+        
+        document.getElementById("restartBtn").style.display = "inline";
+        
+        return;
+        
+      }
+      
+      
+      coins -= 10;
+      
+      
+      var a = Math.floor(Math.random() * 6);
+      var b = Math.floor(Math.random() * 6);
+      var c = Math.floor(Math.random() * 6);
+      
+      
+      document.getElementById("slot").innerHTML =
+        symbols[a] + " " + symbols[b] + " " + symbols[c];
+      
+      
+      var win = 0;
+      
+      
+      if (a == b && b == c) {
+        
+        win = getReward(symbols[a], true);
+        
+      }
+      else if (a == b) {
+        
+        win = getReward(symbols[a], false);
+        
+      }
+      else if (a == c) {
+        
+        win = getReward(symbols[a], false);
+        
+      }
+      else if (b == c) {
+        
+        win = getReward(symbols[b], false);
+        
+      }
+      
+      
+      coins += win;
+      
+      
+      if (coins > high) {
+        
+        high = coins;
+        
+      }
+      
+      
+      document.getElementById("coins").innerHTML =
+        "COINS : " + coins;
+      
+      document.getElementById("high").innerHTML =
+        "HIGH : " + high;
+      
+      
+      if (win > 0) {
+        
+        document.getElementById("msg").innerHTML =
+          "WIN +" + win;
+        
+      }
+      else {
+        
+        document.getElementById("msg").innerHTML =
+          "NO WIN";
+        
+      }
+      
+    }
+    
+    
+    
+    function restart() {
+      
+      coins = 100;
+      
+      document.getElementById("coins").innerHTML =
+        "COINS : " + coins;
+      
+      document.getElementById("slot").innerHTML =
+        "? ? ?";
+      
+      document.getElementById("msg").innerHTML =
+        "GOOD LUCK";
+      
+      
+      document.getElementById("spinBtn").style.display = "inline";
+      
+      document.getElementById("restartBtn").style.display = "none";
+      
+    }
+  </script>
+  
+</body>
+
+</html>

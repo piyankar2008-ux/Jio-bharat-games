@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: monospace;
+      text-align: center;
+      margin: 0;
+      padding: 5px;
+    }
+    
+    .menu-box {
+      margin: 5px auto;
+      padding: 5px;
+      border: 1px dashed #555;
+      width: 170px;
+    }
+
+    .menu-box button {
+      background: #222;
+      color: #fff;
+      border: 1px solid #fff;
+      font-size: 13px;
+      padding: 4px 8px;
+      margin: 2px;
+    }
+    
+    #status {
+      font-size: 16px;
+      margin: 8px;
+      color: #ff0;
+    }
+
+    .grid {
+      display: inline-block;
+      margin: 5px auto;
+      background: #111;
+      border: 2px solid #fff;
+    }
+
+    .row {
+      clear: both;
+    }
+
+    /* Clean cell design with no background text constraints */
+    .cell {
+      float: left;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      font-size: 26px;
+      font-weight: bold;
+      border: 1px solid #444;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #msg {
+      font-size: 15px;
+      margin: 8px;
+      min-height: 20px;
+      color: #0ff;
+    }
+
+    .help-map {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+    }
+    
+    #restartBtn {
+      background: #f00;
+      color: #fff;
+      font-size: 15px;
+      padding: 6px 15px;
+      border: 1px solid #fff;
+      display: none;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h3 style="margin:3px 0;">TIC-TAC-TOE</h3>
+  
+  <div class="menu-box">
+    <button onclick="setMode('AI')" id="btnAI" style="border-color:#0f0;">VS COMPUTER</button>
+    <button onclick="setMode('FRIEND')" id="btnFriend">VS FRIEND</button>
+  </div>
+
+  <div id="status">TURN: X</div>
+  
+  <!-- The board is now completely clean -->
+  <div class="grid">
+    <div class="row">
+      <div class="cell" onclick="pressCell(0)" id="c0">-</div>
+      <div class="cell" onclick="pressCell(1)" id="c1">-</div>
+      <div class="cell" onclick="pressCell(2)" id="c2">-</div>
+    </div>
+    <div class="row">
+      <div class="cell" onclick="pressCell(3)" id="c3">-</div>
+      <div class="cell" onclick="pressCell(4)" id="c4">-</div>
+      <div class="cell" onclick="pressCell(5)" id="c5">-</div>
+    </div>
+    <div class="row">
+      <div class="cell" onclick="pressCell(6)" id="c6">-</div>
+      <div class="cell" onclick="pressCell(7)" id="c7">-</div>
+      <div class="cell" onclick="pressCell(8)" id="c8">-</div>
+    </div>
+  </div>
+  
+  <div id="msg">USE KEYPAD 1-9 TO PLAY</div>
+  
+  <!-- Clean text instruction outside the play area -->
+  <div class="help-map">
+    Top: 1,2,3 | Mid: 4,5,6 | Bot: 7,8,9
+  </div>
+  
+  <div>
+    <button onclick="resetGame()" id="restartBtn">PLAY AGAIN</button>
+  </div>
+
+  <script>
+    var board = ["", "", "", "", "", "", "", "", ""];
+    var currentPlayer = "X";
+    var gameMode = "AI";
+    var gameOver = false;
+
+    var winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    function setMode(mode) {
+      gameMode = mode;
+      document.getElementById("btnAI").style.borderColor = (mode === 'AI') ? '#0f0' : '#fff';
+      document.getElementById("btnFriend").style.borderColor = (mode === 'FRIEND') ? '#0f0' : '#fff';
+      resetGame();
+    }
+
+    function pressCell(index) {
+      if (gameOver || board[index] !== "") return;
+
+      makeMove(index, currentPlayer);
+
+      if (checkWin(currentPlayer)) {
+        document.getElementById("msg").innerHTML = currentPlayer + " WINS!";
+        endGame();
+        return;
+      }
+
+      if (board.indexOf("") === -1) {
+        document.getElementById("msg").innerHTML = "IT'S A DRAW!";
+        endGame();
+        return;
+      }
+
+      if (gameMode === "FRIEND") {
+        currentPlayer = (currentPlayer === "X") ? "O" : "X";
+        document.getElementById("status").innerHTML = "TURN: " + currentPlayer;
+      } else {
+        document.getElementById("status").innerHTML = "THINKING...";
+        gameOver = true;
+        
+        setTimeout(function() {
+          gameOver = false;
+          aiMove();
+        }, 300);
+      }
+    }
+
+    function makeMove(index, player) {
+      board[index] = player;
+      document.getElementById("c" + index).innerHTML = player;
+    }
+
+    function aiMove() {
+      if (gameOver) return;
+
+      var targetIndex = findSmartMove();
+
+      if (targetIndex === -1) {
+        var emptyCells = [];
+        for (var i = 0; i < board.length; i++) {
+          if (board[i] === "") emptyCells.push(i);
+        }
+        targetIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      }
+
+      makeMove(targetIndex, "O");
+
+      if (checkWin("O")) {
+        document.getElementById("msg").innerHTML = "COMPUTER WINS!";
+        endGame();
+        return;
+      }
+
+      if (board.indexOf("") === -1) {
+        document.getElementById("msg").innerHTML = "IT'S A DRAW!";
+        endGame();
+        return;
+      }
+
+      currentPlayer = "X";
+      document.getElementById("status").innerHTML = "TURN: X";
+    }
+
+    function findSmartMove() {
+      var actors = ["O", "X"];
+      for (var a = 0; a < actors.length; a++) {
+        var p = actors[a];
+        for (var i = 0; i < winPatterns.length; i++) {
+          var line = winPatterns[i];
+          var count = 0;
+          var emptyIdx = -1;
+          for (var j = 0; j < 3; j++) {
+            if (board[line[j]] === p) count++;
+            else if (board[line[j]] === "") emptyIdx = line[j];
+          }
+          if (count === 2 && emptyIdx !== -1) return emptyIdx;
+        }
+      }
+      return -1;
+    }
+
+    function checkWin(player) {
+      for (var i = 0; i < winPatterns.length; i++) {
+        var p = winPatterns[i];
+        if (board[p[0]] === player && board[p[1]] === player && board[p[2]] === player) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function endGame() {
+      gameOver = true;
+      document.getElementById("restartBtn").style.display = "inline";
+    }
+
+    function resetGame() {
+      board = ["", "", "", "", "", "", "", "", ""];
+      currentPlayer = "X";
+      gameOver = false;
+      document.getElementById("status").innerHTML = "TURN: X";
+      document.getElementById("msg").innerHTML = "USE KEYPAD 1-9 TO PLAY";
+      document.getElementById("restartBtn").style.display = "none";
+      
+      for (var i = 0; i < 9; i++) {
+        document.getElementById("c" + i).innerHTML = '-';
+      }
+    }
+
+    document.onkeydown = function(e) {
+      var k = e.key;
+      if (k >= "1" && k <= "9") {
+        var idx = parseInt(k) - 1;
+        pressCell(idx);
+      }
+    };
+  </script>
+</body>
+</html>
+
+Merge four of them

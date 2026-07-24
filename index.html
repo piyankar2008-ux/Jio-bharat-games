@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jio Arcade</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding: 6px;
+      width: 100vw;
+      max-width: 240px; /* Jio Bharat phone screen size */
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #ff0;
+      border-bottom: 2px solid #333;
+      padding-bottom: 4px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .game-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #222;
+      border: 2px solid #444;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 2px;
+    }
+
+    /* Simple focus state for feature phone key navigation */
+    .game-link:active,
+    .game-link:focus {
+      background-color: #008;
+      border-color: #00f;
+      color: #ff0;
+      outline: none;
+    }
+
+    .icon {
+      font-size: 14px;
+      color: #0f0;
+    }
+
+    .footer {
+      margin-top: 10px;
+      font-size: 10px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>JIO ARCADE</h1>
+
+  <div class="menu">
+    <a href="highlow.html" class="game-link">
+      <span>1. High Low</span>
+      <span class="icon">&#9654;</span>
+    </a>
+    
+    <a href="hangman.html" class="game-link">
+      <span>2. HANGMAN</span>
+      <span class="icon">&#9654;</span>
+    </a>
+
+    <a href="tictactoe.html" class="game-link">
+      <span>3. TIC TAC TOE</span>
+      <span class="icon">&#9654;</span>
+    </a>
+
+    <a href="dragonflip.html" class="game-link">
+      <span>4. Dragon Flip</span>
+      <span class="icon">&#9654;</span>
+    </a>
+
+    <a href="slotmachine.html" class="game-link">
+      <span>5. SLOT MACHINE</span>
+      <span class="icon">&#9654;</span>
+    </a>
+
+    <a href="flipcard.html" class="game-link">
+      <span>6. Flip Card</span>
+      <span class="icon">&#9654;</span>
+    </a>
+  </div>
+
+  <div class="footer">SELECT GAME</div>
+
+</body>
+</html>
