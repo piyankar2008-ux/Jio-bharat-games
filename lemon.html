@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lemonade Tycoon</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding: 6px;
+    }
+
+    h2 {
+      font-size: 15px;
+      color: #ff0;
+      margin-bottom: 4px;
+      border-bottom: 1px dashed #444;
+      padding-bottom: 4px;
+    }
+
+    /* Embedded graphics banner */
+    .banner {
+      background: #111;
+      border: 1px solid #444;
+      padding: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .banner-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    .box {
+      border: 1px solid #444;
+      background-color: #111;
+      padding: 6px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+
+    .highlight {
+      color: #0ff;
+      font-weight: bold;
+    }
+
+    .green {
+      color: #0f0;
+      font-weight: bold;
+    }
+
+    .red {
+      color: #f00;
+      font-weight: bold;
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      background: #222;
+      padding: 4px;
+      border: 1px solid #333;
+    }
+
+    .control-label {
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .small-btn {
+      background: #333;
+      color: #fff;
+      border: 1px solid #fff;
+      font-size: 14px;
+      font-weight: bold;
+      width: 32px;
+      height: 28px;
+    }
+
+    .small-btn:focus, .small-btn:active {
+      background: #008;
+      color: #ff0;
+    }
+
+    .btn-action {
+      display: block;
+      width: 100%;
+      background-color: #080;
+      color: #fff;
+      border: 2px solid #fff;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 0;
+      margin-top: 6px;
+    }
+
+    .btn-action:focus, .btn-action:active {
+      background-color: #0f0;
+      color: #000;
+    }
+
+    .btn-restart {
+      background-color: #800;
+    }
+
+    #log {
+      color: #ff0;
+      font-size: 11px;
+      min-height: 28px;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>LEMONADE TYCOON</h2>
+
+  <!-- Visual Game Header Banner -->
+  <div class="banner">
+    <!-- Stand/Lemon Vector Graphic -->
+    <svg class="banner-icon" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="14" fill="#ff0"/>
+      <path d="M10 16 Q16 8 22 16 T10 16" fill="#0b0"/>
+    </svg>
+    <div style="font-size:12px; font-weight:bold; color:#ff0;">30-DAY CHALLENGE</div>
+  </div>
+
+  <!-- Status Dashboard -->
+  <div class="box">
+    <div class="stat-row">
+      <span>DAY: <span id="day" class="highlight">1</span>/30</span>
+      <span>CASH: <span id="cash" class="green">₹100</span></span>
+    </div>
+    <div class="stat-row">
+      <span>WEATHER: <span id="weather" class="highlight">SUNNY</span></span>
+      <span>PRICE/CUP: <span id="priceDisplay" class="green">₹10</span></span>
+    </div>
+  </div>
+
+  <!-- Daily Setup Controls -->
+  <div id="gameplay-controls">
+    <div class="control-row">
+      <span class="control-label">BUY LEMONS (₹3/ea):</span>
+      <div>
+        <button class="small-btn" onclick="adjustLemons(-5)">-5</button>
+        <span id="lemonsToBuy" class="highlight" style="margin: 0 4px;">0</span>
+        <button class="small-btn" onclick="adjustLemons(5)">+5</button>
+      </div>
+    </div>
+
+    <div class="control-row">
+      <span class="control-label">SET PRICE:</span>
+      <div>
+        <button class="small-btn" onclick="adjustPrice(-1)">-1</button>
+        <span id="priceVal" class="green" style="margin: 0 4px;">₹10</span>
+        <button class="small-btn" onclick="adjustPrice(1)">+1</button>
+      </div>
+    </div>
+
+    <button class="btn-action" id="startDayBtn" onclick="runDay()">START DAY</button>
+  </div>
+
+  <!-- End Game Controls -->
+  <div id="end-game" style="display:none;">
+    <button class="btn-action btn-restart" onclick="resetGame()">PLAY AGAIN</button>
+  </div>
+
+  <!-- Output Log -->
+  <div class="box" style="margin-top: 6px;">
+    <div id="log">Welcome! Buy lemons and set your price to start Day 1.</div>
+  </div>
+
+  <script>
+    var day = 1;
+    var cash = 100;
+    var price = 10;
+    var lemonsToBuy = 0;
+    var weatherTypes = ["HOT", "SUNNY", "CLOUDY", "RAINY"];
+    var currentWeather = "SUNNY";
+
+    function adjustLemons(amount) {
+      lemonsToBuy = Math.max(0, lemonsToBuy + amount);
+      document.getElementById("lemonsToBuy").innerHTML = lemonsToBuy;
+    }
+
+    function adjustPrice(amount) {
+      price = Math.max(1, price + amount);
+      document.getElementById("priceVal").innerHTML = "₹" + price;
+      document.getElementById("priceDisplay").innerHTML = "₹" + price;
+    }
+
+    function runDay() {
+      var lemonCost = lemonsToBuy * 3;
+
+      if (lemonCost > cash) {
+        document.getElementById("log").innerHTML = "<span class='red'>NOT ENOUGH CASH!</span> You need ₹" + lemonCost + " for lemons.";
+        return;
+      }
+
+      cash -= lemonCost;
+
+      var weatherMult = 1.0;
+      if (currentWeather === "HOT") weatherMult = 1.6;
+      if (currentWeather === "SUNNY") weatherMult = 1.2;
+      if (currentWeather === "CLOUDY") weatherMult = 0.8;
+      if (currentWeather === "RAINY") weatherMult = 0.4;
+
+      var priceMult = Math.max(0.1, (15 - price) / 5);
+      var maxCustomers = Math.floor((Math.random() * 15 + 10) * weatherMult * priceMult);
+      
+      var cupsSold = Math.min(lemonsToBuy, maxCustomers);
+      var revenue = cupsSold * price;
+      var profit = revenue - lemonCost;
+
+      cash += revenue;
+
+      var logText = "Sold " + cupsSold + "/" + lemonsToBuy + " cups.<br>";
+      if (profit >= 0) {
+        logText += "Profit: <span class='green'>+₹" + profit + "</span>";
+      } else {
+        logText += "Loss: <span class='red'>-₹" + Math.abs(profit) + "</span>";
+      }
+
+      document.getElementById("log").innerHTML = logText;
+      day++;
+
+      if (day > 30 || cash <= 0) {
+        endGame();
+      } else {
+        currentWeather = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+        lemonsToBuy = 0;
+        document.getElementById("lemonsToBuy").innerHTML = "0";
+        updateDashboard();
+      }
+    }
+
+    function updateDashboard() {
+      document.getElementById("day").innerHTML = day;
+      document.getElementById("cash").innerHTML = "₹" + cash;
+      document.getElementById("weather").innerHTML = currentWeather;
+      document.getElementById("priceDisplay").innerHTML = "₹" + price;
+    }
+
+    function endGame() {
+      document.getElementById("gameplay-controls").style.display = "none";
+      document.getElementById("end-game").style.display = "block";
+
+      if (cash <= 0) {
+        document.getElementById("log").innerHTML = "<span class='red'>BANKRUPT!</span> You ran out of money on Day " + (day - 1) + ".";
+      } else {
+        var finalProfit = cash - 100;
+        document.getElementById("log").innerHTML = "<b>GAME OVER!</b><br>Final Cash: <span class='green'>₹" + cash + "</span><br>Total Profit: ₹" + finalProfit;
+      }
+    }
+
+    function resetGame() {
+      day = 1;
+      cash = 100;
+      price = 10;
+      lemonsToBuy = 0;
+      currentWeather = "SUNNY";
+
+      document.getElementById("gameplay-controls").style.display = "block";
+      document.getElementById("end-game").style.display = "none";
+      document.getElementById("lemonsToBuy").innerHTML = "0";
+      document.getElementById("priceVal").innerHTML = "₹10";
+      document.getElementById("log").innerHTML = "Welcome! Buy lemons and set your price to start Day 1.";
+
+      updateDashboard();
+    }
+
+    updateDashboard();
+  </script>
+
+</body>
+</html>
