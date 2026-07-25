@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alternating Smart Tic Tac Toe</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: monospace;
+    text-align: center;
+    padding: 10px;
+  }
+
+  h2 {
+    color: #ffcc00;
+    font-size: 20px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed #444;
+    padding-bottom: 4px;
+  }
+
+  #score {
+    font-size: 15px;
+    margin: 6px 0;
+    color: #66ff66;
+  }
+
+  .board-row {
+    font-size: 32px;
+    border: 2px solid #ffffff;
+    width: 180px;
+    margin: 6px auto;
+    padding: 8px 0;
+    letter-spacing: 12px;
+    background: #111;
+  }
+
+  #msg {
+    font-size: 15px;
+    margin: 10px 0;
+    color: #00ffff;
+    min-height: 24px;
+  }
+
+  .btn-row {
+    margin: 4px 0;
+  }
+
+  button {
+    font-size: 16px;
+    font-family: monospace;
+    font-weight: bold;
+    padding: 10px 18px;
+    margin: 3px;
+    background: #222;
+    color: #fff;
+    border: 2px solid #555;
+    cursor: pointer;
+  }
+
+  button:active {
+    background: #ffcc00;
+    color: #000;
+  }
+
+  #restartBtn {
+    background: #0066cc;
+    border-color: #004999;
+    width: 180px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+
+<body>
+
+  <h2>TIC TAC TOE</h2>
+
+  <div id="score">YOU(X): 0 | BOT(O): 0</div>
+
+  <!-- Slot Display Boxes -->
+  <div id="row1" class="board-row">? ? ?</div>
+  <div id="row2" class="board-row">? ? ?</div>
+  <div id="row3" class="board-row">? ? ?</div>
+
+  <div id="msg">YOUR TURN FIRST</div>
+
+  <!-- Control Buttons -->
+  <div class="btn-row">
+    <button onclick="playerMove(0)">1</button>
+    <button onclick="playerMove(1)">2</button>
+    <button onclick="playerMove(2)">3</button>
+  </div>
+  <div class="btn-row">
+    <button onclick="playerMove(3)">4</button>
+    <button onclick="playerMove(4)">5</button>
+    <button onclick="playerMove(5)">6</button>
+  </div>
+  <div class="btn-row">
+    <button onclick="playerMove(6)">7</button>
+    <button onclick="playerMove(7)">8</button>
+    <button onclick="playerMove(8)">9</button>
+  </div>
+
+  <div>
+    <button id="restartBtn" onclick="nextRound()">NEXT ROUND</button>
+  </div>
+
+<script>
+  var board = ["?", "?", "?", "?", "?", "?", "?", "?", "?"];
+  var gameOver = false;
+  var userWins = 0;
+  var botWins = 0;
+  
+  // Turn Control Variables
+  var firstTurnPlayer = true; // true = Player starts, false = Bot starts
+  var isPlayerTurn = true;
+
+  var winPatterns = [
+    [0,1,2], [3,4,5], [6,7,8], // Rows
+    [0,3,6], [1,4,7], [2,5,8], // Columns
+    [0,4,8], [2,4,6]          // Diagonals
+  ];
+
+  function renderBoard() {
+    document.getElementById("row1").innerHTML = board[0] + " " + board[1] + " " + board[2];
+    document.getElementById("row2").innerHTML = board[3] + " " + board[4] + " " + board[5];
+    document.getElementById("row3").innerHTML = board[6] + " " + board[7] + " " + board[8];
+  }
+
+  function checkWin(p) {
+    for (var i = 0; i < winPatterns.length; i++) {
+      var w = winPatterns[i];
+      if (board[w[0]] === p && board[w[1]] === p && board[w[2]] === p) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function isDraw() {
+    for (var i = 0; i < 9; i++) {
+      if (board[i] === "?") return false;
+    }
+    return true;
+  }
+
+  function playerMove(index) {
+    if (gameOver || !isPlayerTurn || board[index] !== "?") return;
+
+    // Player action
+    board[index] = "X";
+    renderBoard();
+
+    if (checkWin("X")) {
+      userWins++;
+      document.getElementById("msg").innerHTML = "YOU WIN!";
+      document.getElementById("score").innerHTML = "YOU(X): " + userWins + " | BOT(O): " + botWins;
+      gameOver = true;
+      return;
+    }
+
+    if (isDraw()) {
+      document.getElementById("msg").innerHTML = "IT'S A DRAW!";
+      gameOver = true;
+      return;
+    }
+
+    // Switch turn to Bot
+    isPlayerTurn = false;
+    document.getElementById("msg").innerHTML = "BOT'S TURN...";
+    botMove();
+  }
+
+  function findBestMove(playerSymbol) {
+    for (var i = 0; i < winPatterns.length; i++) {
+      var w = winPatterns[i];
+      var countSymbol = 0;
+      var emptyIndex = -1;
+
+      for (var j = 0; j < 3; j++) {
+        if (board[w[j]] === playerSymbol) {
+          countSymbol++;
+        } else if (board[w[j]] === "?") {
+          emptyIndex = w[j];
+        }
+      }
+
+      if (countSymbol === 2 && emptyIndex !== -1) {
+        return emptyIndex;
+      }
+    }
+    return -1;
+  }
+
+  function botMove() {
+    var choice = -1;
+
+    // 1. Check for winning move
+    choice = findBestMove("O");
+
+    // 2. Block player's winning move
+    if (choice === -1) {
+      choice = findBestMove("X");
+    }
+
+    // 3. Take Center
+    if (choice === -1 && board[4] === "?") {
+      choice = 4;
+    }
+
+    // 4. Take Corner
+    if (choice === -1) {
+      var corners = [0, 2, 6, 8];
+      var openCorners = [];
+      for (var c = 0; c < corners.length; c++) {
+        if (board[corners[c]] === "?") openCorners.push(corners[c]);
+      }
+      if (openCorners.length > 0) {
+        choice = openCorners[Math.floor(Math.random() * openCorners.length)];
+      }
+    }
+
+    // 5. Take any open spot
+    if (choice === -1) {
+      var remaining = [];
+      for (var k = 0; k < 9; k++) {
+        if (board[k] === "?") remaining.push(k);
+      }
+      if (remaining.length > 0) {
+        choice = remaining[Math.floor(Math.random() * remaining.length)];
+      }
+    }
+
+    // Execute Bot Move
+    if (choice !== -1) {
+      board[choice] = "O";
+      renderBoard();
+
+      if (checkWin("O")) {
+        botWins++;
+        document.getElementById("msg").innerHTML = "BOT WINS!";
+        document.getElementById("score").innerHTML = "YOU(X): " + userWins + " | BOT(O): " + botWins;
+        gameOver = true;
+        return;
+      }
+
+      if (isDraw()) {
+        document.getElementById("msg").innerHTML = "IT'S A DRAW!";
+        gameOver = true;
+        return;
+      }
+
+      // Switch turn back to player
+      isPlayerTurn = true;
+      document.getElementById("msg").innerHTML = "YOUR TURN (TAP A NUMBER)";
+    }
+  }
+
+  function nextRound() {
+    board = ["?", "?", "?", "?", "?", "?", "?", "?", "?"];
+    gameOver = false;
+    renderBoard();
+
+    // Toggle starting player
+    firstTurnPlayer = !firstTurnPlayer;
+    isPlayerTurn = firstTurnPlayer;
+
+    if (isPlayerTurn) {
+      document.getElementById("msg").innerHTML = "YOUR TURN FIRST";
+    } else {
+      document.getElementById("msg").innerHTML = "BOT STARTS FIRST...";
+      botMove();
+    }
+  }
+</script>
+
+</body>
+</html>
