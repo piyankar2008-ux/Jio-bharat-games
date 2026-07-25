@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simon Blind Memory</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  body {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+  }
+
+  h1 {
+    color: #ffcc00;
+    font-size: 16px;
+    margin-bottom: 4px;
+    border-bottom: 1px dashed #444;
+    padding-bottom: 4px;
+  }
+
+  #level {
+    color: #66ff66;
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+
+  /* Displays ONLY the newly added color */
+  #newColorDisplay {
+    background: #111;
+    border: 2px solid #ff0;
+    padding: 10px;
+    margin: 6px 0;
+    font-size: 15px;
+    color: #fff;
+    min-height: 42px;
+    display: block;
+    font-weight: bold;
+  }
+
+  #status {
+    font-size: 12px;
+    margin: 4px 0;
+    min-height: 18px;
+    color: #0ff;
+  }
+
+  #progress {
+    color: #aaa;
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  /* Main Action Button - Positioned TOP */
+  .btn-action-top {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    margin: 6px 0;
+    background: #008800;
+    color: #fff;
+    border: 2px solid #00ff00;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .btn-action-top:active {
+    background: #00ff00;
+    color: #000;
+  }
+
+  /* Single Column Stacked Color Buttons */
+  .btn-color {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    margin: 4px 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    border: 2px solid #fff;
+    cursor: pointer;
+  }
+
+  #red    { background: #cc3333; }
+  #blue   { background: #3355cc; }
+  #green  { background: #33aa55; }
+  #yellow { background: #ddaa22; color: #000; }
+
+  .btn-color:active {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .btn-restart {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 10px;
+    background: #333;
+    color: #ccc;
+    border: 1px solid #666;
+    font-size: 12px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>SIMON BLIND MEMORY</h1>
+<div id="level">STAGE: 1</div>
+
+<div id="newColorDisplay">Tap "START GAME" below!</div>
+
+<!-- MAIN ACTION BUTTON AT THE TOP -->
+<button class="btn-action-top" id="showBtn" onclick="startRound()">START GAME</button>
+
+<div id="status">Remember the full sequence from step 1!</div>
+<div id="progress">Progress: 0 / 0</div>
+
+<!-- Vertical Color Buttons -->
+<div>
+  <button class="btn-color" id="red" onclick="press('RED')">1. RED</button>
+  <button class="btn-color" id="blue" onclick="press('BLUE')">2. BLUE</button>
+  <button class="btn-color" id="green" onclick="press('GREEN')">3. GREEN</button>
+  <button class="btn-color" id="yellow" onclick="press('YELLOW')">4. YELLOW</button>
+</div>
+
+<button class="btn-restart" onclick="restart()">RESTART GAME</button>
+
+<script>
+  var colors = ['RED', 'BLUE', 'GREEN', 'YELLOW'];
+  var sequence = [];
+  var playerIndex = 0;
+  var level = 1;
+  var gameActive = false;
+
+  function getRandomColor() {
+    var idx = Math.floor(Math.random() * 4);
+    return colors[idx];
+  }
+
+  function startRound() {
+    if (gameActive) return;
+
+    // Pick 1 new color and append to secret sequence
+    var addedColor = getRandomColor();
+    sequence.push(addedColor);
+    
+    playerIndex = 0;
+    gameActive = true;
+
+    // Show the new color
+    document.getElementById('newColorDisplay').innerHTML = "NEW COLOR: <span style='color:#ff0'>" + addedColor + "</span>";
+    document.getElementById('status').textContent = 'Tap sequence from Color 1 to Stage ' + level + '!';
+    document.getElementById('progress').textContent = 'Progress: 0 / ' + sequence.length;
+    
+    // Hide the top button while typing the sequence
+    document.getElementById('showBtn').style.display = 'none';
+  }
+
+  function press(color) {
+    if (!gameActive) {
+      document.getElementById('status').textContent = 'Tap "NEXT COLOR" at the top first!';
+      return;
+    }
+
+    // Check tap against hidden sequence history
+    if (color === sequence[playerIndex]) {
+      playerIndex++;
+      document.getElementById('progress').textContent = 'Progress: ' + playerIndex + ' / ' + sequence.length;
+
+      // Completed the whole sequence correctly!
+      if (playerIndex === sequence.length) {
+        level++;
+        gameActive = false;
+        
+        document.getElementById('level').textContent = 'STAGE: ' + level;
+        document.getElementById('status').textContent = 'STAGE CLEAR! Tap the TOP button for next color.';
+        document.getElementById('newColorDisplay').textContent = 'Tap "NEXT COLOR" above!';
+        
+        // Bring back top button for the next round
+        document.getElementById('showBtn').textContent = 'NEXT COLOR (STAGE ' + level + ')';
+        document.getElementById('showBtn').style.display = 'block';
+      }
+    } else {
+      // Wrong tap!
+      gameActive = false;
+      document.getElementById('status').textContent = 'WRONG! Sequence was: ' + sequence.join(' -> ');
+      document.getElementById('newColorDisplay').textContent = 'GAME OVER!';
+      
+      document.getElementById('showBtn').textContent = 'PLAY AGAIN';
+      document.getElementById('showBtn').style.display = 'block';
+      
+      // Reset variables on game over
+      sequence = [];
+      level = 1;
+    }
+  }
+
+  function restart() {
+    sequence = [];
+    playerIndex = 0;
+    level = 1;
+    gameActive = false;
+    
+    document.getElementById('level').textContent = 'STAGE: 1';
+    document.getElementById('newColorDisplay').textContent = 'Tap "START GAME" below!';
+    document.getElementById('status').textContent = 'Remember the full sequence from step 1!';
+    document.getElementById('progress').textContent = 'Progress: 0 / 0';
+    
+    document.getElementById('showBtn').textContent = 'START GAME';
+    document.getElementById('showBtn').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
