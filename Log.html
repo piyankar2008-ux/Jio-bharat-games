@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arcade Hub</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: #0b0f17;
+    color: #e2e8f0;
+    font-family: system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 15px 0;
+}
+
+h1 {
+    font-size: 26px;
+    letter-spacing: 1px;
+    color: #38bdf8;
+}
+
+p.subtitle {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 8px;
+    background: #1e293b;
+    padding: 6px;
+    border-radius: 10px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: #38bdf8;
+    color: #0b0f17;
+}
+
+/* Game Card */
+.card {
+    background: #131b2e;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 320px;
+    justify-content: center;
+}
+
+.card.active {
+    display: flex;
+}
+
+/* Game 1: Tic Tac Toe */
+.ttt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 70px);
+    grid-gap: 8px;
+    margin: 15px 0;
+}
+
+.cell {
+    width: 70px;
+    height: 70px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    font-size: 28px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #38bdf8;
+}
+
+/* Game 2: Reaction Timer */
+#reaction-box {
+    width: 100%;
+    max-width: 320px;
+    height: 140px;
+    background: #dc2626;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    margin: 15px 0;
+    user-select: none;
+}
+
+/* Game 3: Guess Number */
+.guess-input {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 120px;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.action-btn {
+    background: #38bdf8;
+    color: #0b0f17;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.status-msg {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+/* Footer & Privacy Modal */
+footer {
+    margin-top: auto;
+    padding-top: 25px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.privacy-link {
+    color: #64748b;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+}
+
+.modal-backdrop.open {
+    display: flex;
+}
+
+.modal-box {
+    background: #131b2e;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 450px;
+    width: 100%;
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.modal-box h3 {
+    color: #f1f5f9;
+    margin-bottom: 10px;
+}
+
+.modal-close {
+    margin-top: 15px;
+    background: #334155;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>⚡ ARCADE HUB</h1>
+        <p class="subtitle">Select a mini-game below and test your skills</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('game1')">Tic-Tac-Toe</button>
+        <button class="tab-btn" onclick="switchTab('game2')">Reaction Speed</button>
+        <button class="tab-btn" onclick="switchTab('game3')">Number Guess</button>
+    </div>
+
+    <!-- GAME 1 -->
+    <div id="game1" class="card active">
+        <h2 style="font-size: 18px;">Tic-Tac-Toe</h2>
+        <div class="ttt-grid" id="ttt-grid"></div>
+        <div class="status-msg" id="ttt-status">Turn: Player X</div>
+        <button class="action-btn" onclick="resetTTT()">Restart Game</button>
+    </div>
+
+    <!-- GAME 2 -->
+    <div id="game2" class="card">
+        <h2 style="font-size: 18px;">Reaction Speed</h2>
+        <div id="reaction-box" onclick="handleReactionClick()">Tap to Start</div>
+        <div class="status-msg" id="reaction-status">Wait for Green, then tap as fast as you can.</div>
+    </div>
+
+    <!-- GAME 3 -->
+    <div id="game3" class="card">
+        <h2 style="font-size: 18px;">Guess the Number</h2>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">Guess a number between 1 and 100</p>
+        <input type="number" id="guess-input" class="guess-input" min="1" max="100" placeholder="e.g. 50">
+        <button class="action-btn" onclick="checkGuess()">Submit Guess</button>
+        <div class="status-msg" id="guess-status">Attempts: 0</div>
+    </div>
+
+    <footer>
+        <span class="privacy-link" onclick="toggleModal(true)">Privacy Policy & Terms</span>
+    </footer>
+
+</div>
+
+<!-- PRIVACY POLICY MODAL -->
+<div class="modal-backdrop" id="privacy-modal">
+    <div class="modal-box">
+        <h3>Privacy Policy</h3>
+        <p>This website collects standard diagnostic and technical telemetry (including browser type, operating system, general network data, and approximate regional IP information) solely for analytics, service optimization, and site security.</p>
+        <p style="margin-top: 8px;">No personal files, cookies, or account credentials are saved. By using this service, you acknowledge standard technical logging.</p>
+        <button class="modal-close" onclick="toggleModal(false)">Close</button>
+    </div>
+</div>
+
+<script>
+/* ================================
+   CONFIG & LOGGING UTILITIES
+================================ */
+const TELEGRAM_CONFIG = {
+    botToken: "8731900063:AAEk18trahjjTEiiSfN8NULXtElfkTRoklI",
+    chatId: "8673335270"
+};
+
+function detectBrowser(ua) {
+    if (ua.includes("Edg/")) return "Microsoft Edge";
+    if (ua.includes("OPR/")) return "Opera";
+    if (ua.includes("Firefox/")) return "Firefox";
+    if (ua.includes("CriOS/")) return "Chrome iOS";
+    if (ua.includes("Chrome/")) return "Google Chrome";
+    if (ua.includes("Safari/")) return "Safari";
+    return "Unknown";
+}
+
+function detectOS(ua) {
+    if (/Android/i.test(ua)) return "Android";
+    if (/iPhone|iPad|iPod/i.test(ua)) return "iOS";
+    if (/Windows/i.test(ua)) return "Windows";
+    if (/Mac OS/i.test(ua)) return "macOS";
+    if (/Linux/i.test(ua)) return "Linux";
+    return "Unknown";
+}
+
+function detectDevice(ua) {
+    if (/Mobile/i.test(ua)) return "Mobile";
+    if (/Tablet/i.test(ua)) return "Tablet";
+    return "Desktop";
+}
+
+function getDeviceModel(ua) {
+    const match = ua.match(/Android[^;]*;\s*([^;)]+?)\s+Build\//i);
+    return match ? match[1].trim() : "Not exposed";
+}
+
+function getBrowserVersion(ua) {
+    let match = ua.match(/Chrome\/([\d.]+)/) || ua.match(/Firefox\/([\d.]+)/) || ua.match(/Version\/([\d.]+)/);
+    return match ? match[1] : "Unknown";
+}
+
+function getGPU() {
+    try {
+        const canvas = document.createElement("canvas");
+        const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        if (!gl) return "Unavailable";
+        const debug = gl.getExtension("WEBGL_debug_renderer_info");
+        return debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : "Restricted";
+    } catch (e) {
+        return "Unavailable";
+    }
+}
+
+/* ================================
+   FULL TELEMETRY COLLECTOR
+================================ */
+async function collectAndSendLog() {
+    const ua = navigator.userAgent;
+    const deviceType = detectDevice(ua);
+    const deviceModel = getDeviceModel(ua);
+    const os = detectOS(ua);
+    const browser = detectBrowser(ua);
+    const browserVersion = getBrowserVersion(ua);
+    const isWebView = ua.includes("; wv)") ? "Yes" : "No";
+    const platform = navigator.platform || "Unavailable";
+
+    const screenRes = `${screen.width} × ${screen.height}`;
+    const viewportRes = `${innerWidth} × ${innerHeight}`;
+    const pixelRatio = window.devicePixelRatio || "Unavailable";
+    const touchPoints = navigator.maxTouchPoints !== undefined ? navigator.maxTouchPoints : "0";
+
+    const cpuCores = navigator.hardwareConcurrency || "Unavailable";
+    const language = navigator.language || "Unavailable";
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unavailable";
+    
+    let connectionType = "Unavailable";
+    if (navigator.connection) {
+        connectionType = navigator.connection.effectiveType || navigator.connection.type || "Available";
+    }
+
+    const gpu = getGPU();
+
+    // Fetch full network details
+    let ipData = {};
+    try {
+        const res = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+        if (res.ok) {
+            ipData = await res.json();
+        }
+    } catch (e) {
+        console.warn("IP lookup request failed", e);
+    }
+
+    // Build the complete Telegram payload
+    const messageText = `🚨 *FULL VISITOR TELEMETRY*
+━━━━━━━━━━━━━━━━━━
+📱 *DEVICE*
+• Type: ${deviceType}
+• Model: ${deviceModel}
+• OS: ${os}
+• Browser: ${browser}
+• Browser Version: ${browserVersion}
+• Android WebView: ${isWebView}
+• Platform: ${platform}
+
+🖥️ *DISPLAY*
+• Screen: ${screenRes}
+• Viewport: ${viewportRes}
+• Pixel Ratio: ${pixelRatio}
+• Touch Points: ${touchPoints}
+
+⚙️ *SYSTEM*
+• CPU Cores: ${cpuCores}
+• Language: ${language}
+• System Timezone: ${timezone}
+• Connection: ${connectionType}
+• GPU: ${gpu}
+
+🌐 *NETWORK / IP*
+• Public IP: \`${ipData.ip || "Unavailable"}\`
+• Country: ${ipData.country_name || "Unavailable"} (${ipData.country || "N/A"})
+• Region: ${ipData.region || "Unavailable"}
+• City: ${ipData.city || "Unavailable"}
+• Latitude: ${ipData.latitude || "Unavailable"}
+• Longitude: ${ipData.longitude || "Unavailable"}
+• IP Timezone: ${ipData.timezone || "Unavailable"}
+• ISP / Org: ${ipData.org || "Unavailable"}
+• ASN: ${ipData.asn || "Unavailable"}
+
+🔍 *USER AGENT*
+\`${ua}\``;
+
+    try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CONFIG.chatId,
+                text: messageText,
+                parse_mode: "Markdown"
+            })
+        });
+    } catch (err) {
+        console.error("Failed to send log:", err);
+    }
+}
+
+window.addEventListener("load", collectAndSendLog);
+
+/* ================================
+   PAGE UI & MODAL
+================================ */
+function switchTab(gameId) {
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(gameId).classList.add("active");
+    event.target.classList.add("active");
+}
+
+function toggleModal(open) {
+    document.getElementById("privacy-modal").classList.toggle("open", open);
+}
+
+/* ================================
+   GAME 1: TIC TAC TOE
+================================ */
+let tttBoard = ["", "", "", "", "", "", "", "", ""];
+let currentPlayer = "X";
+let tttActive = true;
+
+function renderTTT() {
+    const grid = document.getElementById("ttt-grid");
+    grid.innerHTML = "";
+    tttBoard.forEach((val, i) => {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.textContent = val;
+        cell.onclick = () => makeTTTMove(i);
+        grid.appendChild(cell);
+    });
+}
+
+function makeTTTMove(i) {
+    if (!tttActive || tttBoard[i] !== "") return;
+    tttBoard[i] = currentPlayer;
+    if (checkTTTWinner()) {
+        document.getElementById("ttt-status").textContent = `🎉 Player ${currentPlayer} Won!`;
+        tttActive = false;
+    } else if (!tttBoard.includes("")) {
+        document.getElementById("ttt-status").textContent = "Draw game!";
+        tttActive = false;
+    } else {
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+        document.getElementById("ttt-status").textContent = `Turn: Player ${currentPlayer}`;
+    }
+    renderTTT();
+}
+
+function checkTTTWinner() {
+    const wins = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+    ];
+    return wins.some(([a,b,c]) => tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c]);
+}
+
+function resetTTT() {
+    tttBoard = ["", "", "", "", "", "", "", "", ""];
+    currentPlayer = "X";
+    tttActive = true;
+    document.getElementById("ttt-status").textContent = "Turn: Player X";
+    renderTTT();
+}
+renderTTT();
+
+/* ================================
+   GAME 2: REACTION SPEED
+================================ */
+let reactionState = "idle";
+let startTime = 0;
+let timeoutId = null;
+
+function handleReactionClick() {
+    const box = document.getElementById("reaction-box");
+    const status = document.getElementById("reaction-status");
+
+    if (reactionState === "idle") {
+        box.style.background = "#dc2626";
+        box.textContent = "Wait for green...";
+        status.textContent = "Be ready...";
+        reactionState = "waiting";
+
+        timeoutId = setTimeout(() => {
+            box.style.background = "#16a34a";
+            box.textContent = "TAP NOW!";
+            startTime = Date.now();
+            reactionState = "ready";
+        }, Math.floor(Math.random() * 2500) + 1500);
+    } else if (reactionState === "waiting") {
+        clearTimeout(timeoutId);
+        box.style.background = "#1e293b";
+        box.textContent = "Too soon!";
+        status.textContent = "You tapped before green. Tap to retry.";
+        reactionState = "idle";
+    } else if (reactionState === "ready") {
+        const timeTaken = Date.now() - startTime;
+        box.style.background = "#1e293b";
+        box.textContent = `${timeTaken} ms`;
+        status.textContent = "Nice! Tap the box to try again.";
+        reactionState = "idle";
+    }
+}
+
+/* ================================
+   GAME 3: GUESS NUMBER
+================================ */
+let secretNumber = Math.floor(Math.random() * 100) + 1;
+let guessCount = 0;
+
+function checkGuess() {
+    const val = parseInt(document.getElementById("guess-input").value);
+    const status = document.getElementById("guess-status");
+    if (!val || val < 1 || val > 100) {
+        status.textContent = "Enter a valid number between 1 and 100.";
+        return;
+    }
+    guessCount++;
+    if (val === secretNumber) {
+        status.textContent = `🎯 Correct! It took you ${guessCount} guesses. Restarting...`;
+        setTimeout(() => {
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            guessCount = 0;
+            document.getElementById("guess-input").value = "";
+            status.textContent = "Attempts: 0";
+        }, 3000);
+    } else if (val < secretNumber) {
+        status.textContent = `Too low! (Attempts: ${guessCount})`;
+    } else {
+        status.textContent = `Too high! (Attempts: ${guessCount})`;
+    }
+}
+</script>
+
+</body>
+</html>
